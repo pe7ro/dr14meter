@@ -22,7 +22,7 @@ from dr14tmeter.dynamic_range_meter import DynamicRangeMeter
 from dr14tmeter.table import *
 from dr14tmeter.audio_analysis import *
 from dr14tmeter.database import dr_database_singletone
-from dr14tmeter.dr14_global import dr14_version, TestVer, test_new_version, get_home_url, get_new_version, get_exe_name
+from dr14tmeter.dr14_global import get_exe_name, dr14_version
 from dr14tmeter.dr14_utils import *
 from dr14tmeter.out_messages import *
 from dr14tmeter.dr14_config import *
@@ -116,9 +116,9 @@ def main():
     if options.quiet:
         set_quiet_msg()
 
-    if not options.quiet and not options.skip_version_check:
-        l_ver = TestVer()
-        l_ver.start()
+    # if not options.quiet and not options.skip_version_check:
+    #     l_ver = TestVer()
+    #     l_ver.start()
 
     print_msg(path_name)
     print_msg("")
@@ -175,16 +175,6 @@ def main():
 
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         subprocess.call("stty sane", shell=True)
-
-    if test_new_version():
-        print_msg(
-            "\n----------------------------------------------------------------------")
-        print_msg(" A new version of dr14_t.meter [ %s ] is available for download"
-                  " \n please visit: %s" % (
-                      get_new_version(), get_home_url()))
-
-        print_msg(
-            "----------------------------------------------------------------------\n")
 
     if not database_exists():
         print_msg(" ")

@@ -1,0 +1,44 @@
+[build-system]
+#requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dr14_tmeter"
+version = "1.1.0"
+description = "Compute the DR14 value of the given audio files"
+keywords = ["dr14", "dynamic range"]
+authors = [
+    { name = "pe7ro", email = "44572319+pe7ro@users.noreply.github.com " }
+]
+readme = "README.md"
+license = { text = "GPL-3.0+" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Users",
+    "License :: OSI Approved :: GPL-3.0+",
+    "Operating System :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia"
+]
+
+dependencies = [
+    "numpy",
+    'mutagen'
+]
+
+[project.urls]
+"Homepage" = "https://github.com/pe7ro/p7_dr14_tmeter"
+"Bug Reports" = "https://github.com/pe7ro/p7_dr14_tmeter/issues"
+"Source" = "https://github.com/pe7ro/p7_dr14_tmeter"
+
+[project.scripts]
+#sample = "dr14tmeter:main"
+#dr14tmeter = "dr14tmeter.dr14_tmeter:main"
+dr14tmeter = "dr14tmeter:main"
+
+#[tool.setuptools]
+#packages = ["dr14_tmeter"]
+#scripts = ["dr14_tmeter"]

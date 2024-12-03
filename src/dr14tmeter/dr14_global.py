@@ -15,25 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
-import re
 import threading
 import subprocess
 
 from dr14tmeter.out_messages import print_msg
 
-
-###########################
-# Current version
-v_major = 2
-v_minor = 0
-v_revision = 0
-###########################
-
-# latest version
-l_major = 0
-l_minor = 0
-l_revision = 0
 
 lock_ver = threading.Lock()
 
@@ -41,10 +27,7 @@ ffmpeg_cmd = None
 
 
 def dr14_version():
-    global v_major
-    global v_minor
-    global v_revision
-    return "%d.%d.%d" % (v_major, v_minor, v_revision)
+    return "1.1.0"
 
 
 def min_dr():
@@ -73,96 +56,8 @@ def get_ffmpeg_cmd():
     return ffmpeg_cmd
 
 
-class TestVer(threading.Thread):
-
-    def run(self):
-        _dr14_get_latest_version()
-
-
-def _dr14_get_latest_version():
-
-    global l_major
-    global l_minor
-    global l_revision
-    global lock_ver
-
-    ver_url = "http://simon-r.github.com/dr14_t.meter/ver.html"
-    #print_msg ( ver_url )
-
-    try:
-        if sys.version_info[0] > 2:
-            import urllib.request
-            opener = urllib.request.FancyURLopener({})
-            f = opener.open(ver_url)
-            vr = f.read()
-            vr = vr.decode()
-        else:
-            import urllib
-            opener = urllib.FancyURLopener({})
-            f = opener.open(ver_url)
-            vr = f.read()
-    except:
-        return
-
-    re_flags = (re.MULTILINE | re.IGNORECASE | re.UNICODE)
-    m = re.search(
-        r"<div\s+id=\"version\">\s*(\d+)\.(\d+)\.(\d+)\s*</div>", vr, re_flags)
-
-    if m == None:
-        return
-
-    lock_ver.acquire()
-    if len(m.groups()) == 3:
-        l_major = int(m.groups()[0])
-        l_minor = int(m.groups()[1])
-        l_revision = int(m.groups()[2])
-    else:
-        l_major = 0
-        l_minor = 0
-        l_revision = 0
-
-    lock_ver.release()
-
-
-def test_new_version():
-    global l_major
-    global l_minor
-    global l_revision
-
-    global v_major
-    global v_minor
-    global v_revision
-
-    lock_ver.acquire()
-
-    curr_ver = (v_major, v_minor, v_revision)
-    online_ver = (l_major, l_minor, l_revision)
-
-    for i in range(0, 3):
-        if online_ver[i] > curr_ver[i]:
-            lock_ver.release()
-            return True
-        elif online_ver[i] < curr_ver[i]:
-            lock_ver.release()
-            return False
-
-    lock_ver.release()
-    return False
-
-
-def get_new_version():
-
-    global lock_ver
-
-    lock_ver.acquire()
-    res = "%d.%d.%d" % (l_major, l_minor, l_revision)
-    lock_ver.release()
-
-    return res
-
-
 def get_home_url():
-    return "http://simon-r.github.com/dr14_t.meter"
+    return "https://github.com/pe7ro/p7_dr14_tmeter"
 
 
 def test_matplotlib_modules(fun_name):
