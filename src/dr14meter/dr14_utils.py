@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from dr14tmeter.tagger import Tagger
+from dr14meter.tagger import Tagger
 import multiprocessing
 import os
 import tempfile
@@ -23,11 +23,11 @@ import fileinput
 import time
 import sys
 
-from dr14tmeter import dr14_global
-from dr14tmeter import dr14_config as config
-from dr14tmeter import audio_analysis as aa
-from dr14tmeter.dynamic_range_meter import DynamicRangeMeter, TextTable, BBcodeTable, HtmlTable, MediaWikiTable
-from dr14tmeter.out_messages import print_msg
+from dr14meter import dr14_global
+from dr14meter import dr14_config as config
+from dr14meter import audio_analysis as aa
+from dr14meter.dynamic_range_meter import DynamicRangeMeter, TextTable, BBcodeTable, HtmlTable, MediaWikiTable
+from dr14meter.out_messages import print_msg
 
 
 def scan_files_list(input_file, options, out_dir):

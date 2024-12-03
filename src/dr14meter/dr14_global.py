@@ -14,11 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import importlib.metadata
 import threading
 import subprocess
 
-from dr14tmeter.out_messages import print_msg
+from dr14meter.out_messages import print_msg
 
 
 lock_ver = threading.Lock()
@@ -27,7 +27,8 @@ ffmpeg_cmd = None
 
 
 def dr14_version():
-    return "1.1.0"
+    return importlib.metadata.version('dr14meter')
+    # return dr14meter.out_messages.__version__
 
 
 def min_dr():
@@ -35,7 +36,7 @@ def min_dr():
 
 
 def get_exe_name():
-    return "dr14_tmeter"
+    return "dr14meter"
 
 
 def get_ffmpeg_cmd():
@@ -57,7 +58,7 @@ def get_ffmpeg_cmd():
 
 
 def get_home_url():
-    return "https://github.com/pe7ro/p7_dr14_tmeter"
+    return "https://github.com/pe7ro/p7_dr14meter"
 
 
 def test_matplotlib_modules(fun_name):

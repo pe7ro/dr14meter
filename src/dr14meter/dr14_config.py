@@ -32,7 +32,7 @@ def get_config_directory(create=True):
     if p is None or not os.path.isabs(p):
         p = os.path.expanduser('~/.config')
 
-    cfg_dir = os.path.join(p, 'dr14tmeter')
+    cfg_dir = os.path.join(p, 'dr14meter')
 
     if not os.path.isdir(cfg_dir) and create:
         os.mkdir(cfg_dir)

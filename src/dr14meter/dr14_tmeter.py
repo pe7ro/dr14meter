@@ -17,16 +17,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from dr14tmeter.parse_args import parse_args
-from dr14tmeter.dynamic_range_meter import DynamicRangeMeter
-from dr14tmeter.table import *
-from dr14tmeter.audio_analysis import *
-from dr14tmeter.database import dr_database_singletone
-from dr14tmeter.dr14_global import get_exe_name, dr14_version
-from dr14tmeter.dr14_utils import *
-from dr14tmeter.out_messages import *
-from dr14tmeter.dr14_config import *
-from dr14tmeter.database_utils import *
+from dr14meter.parse_args import parse_args
+from dr14meter.dynamic_range_meter import DynamicRangeMeter
+from dr14meter.table import *
+from dr14meter.audio_analysis import *
+from dr14meter.database import dr_database_singletone
+from dr14meter.dr14_global import get_exe_name, dr14_version
+from dr14meter.dr14_utils import *
+from dr14meter.out_messages import *
+from dr14meter.dr14_config import *
+from dr14meter.database_utils import *
 
 import os
 import subprocess
@@ -77,7 +77,7 @@ def main():
 
         if not database_exists():
             print_err("Error: The database does not exist")
-            print_err("Error: type dr14_tmeter -q for more info.")
+            print_err(f"Error: type {get_exe_name} -q for more info.")
             return
 
         if len(options.query) == 0:
@@ -89,7 +89,7 @@ def main():
                                     "hist", "evol", "codec"]:
 
             print_err("Error: -q invalid parameter .")
-            print_err("Error: type dr14_tmeter -q for more info.")
+            print_err(f"Error: type {get_exe_name} -q for more info.")
             return
 
         table_code = database_exec_query(options)

@@ -14,8 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dr14tmeter import dr14_global
 import os
+from dr14meter import dr14_global
 from mutagen.mp3 import MP3
 from mutagen.flac import FLAC
 from mutagen.oggvorbis import OggVorbis
@@ -23,7 +23,7 @@ from mutagen.oggopus import OggOpus
 from mutagen.monkeysaudio import MonkeysAudio
 from mutagen.mp4 import MP4
 from mutagen.id3 import ID3, TXXX
-from dr14tmeter.audio_file_reader import *
+from dr14meter.audio_file_reader import *
 
 
 class Tagger:

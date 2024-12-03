@@ -16,7 +16,7 @@
 
 import numpy
 import math
-from dr14tmeter.audio_math import *
+from dr14meter.audio_math import *
 
 try:
     import matplotlib.pyplot as pyplot

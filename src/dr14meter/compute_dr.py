@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dr14tmeter.duration import StructDuration
-from dr14tmeter.compute_dr14 import compute_dr14
-from dr14tmeter.compute_drv import compute_DRV
+from dr14meter.duration import StructDuration
+from dr14meter.compute_dr14 import compute_dr14
+from dr14meter.compute_drv import compute_DRV
 
 import numpy
 

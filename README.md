@@ -1,4 +1,4 @@
-Fork of [simon-r/dr14_t.meter] with applied pull requests.
+Fork of [simon-r/dr14_t.meter](https://github.com/simon-r/dr14_t.meter) with applied pull requests and minor fixes.
 
 ### Introduction to DR14 T.meter ###
 
@@ -11,4 +11,4 @@ Dr14 t.meter is released under the terms of the  GNU GPLv3 license and  is inten
 I've largely tested this application and it has always returned results identical to those of the official off-line meter. 
 
 
-For more info visit: http://dr14tmeter.sourceforge.net
+For more info visit: https://github.com/pe7ro/p7_dr14tmeter

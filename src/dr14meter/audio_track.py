@@ -16,7 +16,7 @@
 
 import numpy
 import os
-from dr14tmeter.audio_decoder import AudioDecoder
+from dr14meter.audio_decoder import AudioDecoder
 
 
 class AudioTrack:

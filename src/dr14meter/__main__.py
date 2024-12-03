@@ -14,15 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# __all__ = ["dr14tmeter"]
+# __all__ = ["dr14meter"]
 
-# from dr14tmeter.dr14_tmeter import main
-import dr14tmeter.dr14_tmeter
+# from dr14meter.dr14_tmeter import main
+import dr14meter.dr14_tmeter
 
 
 def main():
     """Entry point for the application script"""
-    dr14tmeter.dr14_tmeter.main()
+    dr14meter.dr14_tmeter.main()
 
 
 if __name__ == '__main__':

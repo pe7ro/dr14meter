@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from dr14tmeter.audio_file_reader import *
+from dr14meter.audio_file_reader import *
 
 
 class AudioDecoder:

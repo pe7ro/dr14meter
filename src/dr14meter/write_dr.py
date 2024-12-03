@@ -15,10 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import dr14tmeter.dr14_global as dr14
-import dr14tmeter.table as table
+import dr14meter.dr14_global as dr14
+import dr14meter.table as table
 
-from dr14tmeter.database import dr_database_singletone
+from dr14meter.database import dr_database_singletone
 
 
 class WriteDr:

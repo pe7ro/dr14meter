@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy
-from dr14tmeter.audio_math import *
-from dr14tmeter.out_messages import *
-from dr14tmeter.my_time_formatter import *
+from dr14meter.audio_math import *
+from dr14meter.out_messages import *
+from dr14meter.my_time_formatter import *
 
 import math
 import time

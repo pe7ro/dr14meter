@@ -1,6 +1,8 @@
 build/
 venv/
-src/dr14_tmeter.egg-info
+.idea
+src/*.egg-info
+dist/
 *.pyc
 .directory
 .vscode

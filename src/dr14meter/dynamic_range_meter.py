@@ -19,24 +19,24 @@ import sys
 import codecs
 import multiprocessing as mp
 
-from dr14tmeter.compute_dr14 import compute_dr14
-from dr14tmeter.compute_dr import *
-from dr14tmeter.audio_track import *
-from dr14tmeter.table import *
-from dr14tmeter.dr_histogram import *
-from dr14tmeter.lev_histogram import *
-from dr14tmeter.spectrogram import *
-from dr14tmeter.read_metadata import RetirveMetadata
-from dr14tmeter.audio_decoder import AudioDecoder
-from dr14tmeter.duration import StructDuration
-from dr14tmeter.write_dr import WriteDr, WriteDrExtended
-from dr14tmeter.audio_math import sha1_track_v1
-from dr14tmeter.dr14_config import get_collection_dir
-from dr14tmeter.out_messages import print_msg, flush_msg
+from dr14meter.compute_dr14 import compute_dr14
+from dr14meter.compute_dr import *
+from dr14meter.audio_track import *
+from dr14meter.table import *
+from dr14meter.dr_histogram import *
+from dr14meter.lev_histogram import *
+from dr14meter.spectrogram import *
+from dr14meter.read_metadata import RetirveMetadata
+from dr14meter.audio_decoder import AudioDecoder
+from dr14meter.duration import StructDuration
+from dr14meter.write_dr import WriteDr, WriteDrExtended
+from dr14meter.audio_math import sha1_track_v1
+from dr14meter.dr14_config import get_collection_dir
+from dr14meter.out_messages import print_msg, flush_msg
 
-import dr14tmeter.dr14_global as dr14
+import dr14meter.dr14_global as dr14
 
-from dr14tmeter.out_messages import print_msg, print_out
+from dr14meter.out_messages import print_msg, print_out
 
 
 class SharedDrResObj:
