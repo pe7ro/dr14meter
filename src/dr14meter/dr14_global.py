@@ -27,8 +27,11 @@ ffmpeg_cmd = None
 
 
 def dr14_version():
-    return importlib.metadata.version('dr14meter')
-    # return dr14meter.out_messages.__version__
+    try:
+        return importlib.metadata.version('dr14meter')
+    except ModuleNotFoundError:
+        print_msg("The %s function require the installation of MatPlotLib")
+    return 'UNDEF'
 
 
 def min_dr():
@@ -37,6 +40,10 @@ def min_dr():
 
 def get_exe_name():
     return "dr14meter"
+
+
+def get_name_version():
+    return f'dr14meter {dr14_version()}'
 
 
 def get_ffmpeg_cmd():

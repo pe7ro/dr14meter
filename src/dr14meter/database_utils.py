@@ -19,33 +19,29 @@
 import os
 
 from dr14meter.database import dr_database_singletone
-from dr14meter.table import *
+from dr14meter.table import *  # ExtendedTextTable
 from dr14meter.audio_analysis import *
-from dr14meter.dr14_global import *
-from dr14meter.dr14_config import *
+# from dr14meter.dr14_global import *
+import dr14meter.dr14_global as dr14
+from dr14meter.dr14_config import *  # get_db_path, enable_db, database_exists
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.query import *
-from dr14meter.out_messages import *
+from dr14meter.out_messages import *  # print_out, print_err
+# from dr14meter.dr14_utils import *  # test_path_validity
 
-import subprocess
 import sys
 import re
 
 
 def local_dr_database_configure():
 
-    subprocess.call("clear", shell=True)
-
-    print_out(
-        "---------------------------------------------------------------------------------------------- ")
-    print_out("- DR14 T.meter --  ")
+    print_out("---------------------------------------------------------------------------------------------- ")
+    print_out(f"- {dr14.get_exe_name()} --  ")
     print_out("- Local DR database - Configuration procedure ")
-    print_out(
-        "---------------------------------------------------------------------------------------------- ")
+    print_out("---------------------------------------------------------------------------------------------- ")
 
     print_out("  ")
-    print_out(
-        "  The database, if enabled, automatically stores all DR result in a local database ")
+    print_out("  The database, if enabled, automatically stores all DR result in a local database ")
     print_out("  - You must set up some parameters to use the database -")
     print_out("  ")
 
@@ -62,7 +58,7 @@ def local_dr_database_configure():
         db_path = os.path.expanduser(db_path)
         db_path = os.path.expandvars(db_path)
 
-        if re.sub("\s+", "", db_path) == "":
+        if re.sub(r"\s+", "", db_path) == "":
             flag = False
             db_path = os.path.split(get_db_path())[0]
             continue
@@ -98,7 +94,7 @@ def local_dr_database_configure():
         coll_path = os.path.expanduser(coll_path)
         coll_path = os.path.expandvars(coll_path)
 
-        if re.sub("(\s+)", "", coll_path) in ["", "any"]:
+        if re.sub(r"(\s+)", "", coll_path) in ["", "any"]:
             flag = False
             coll_path = "/"
             continue
@@ -112,10 +108,9 @@ def local_dr_database_configure():
                 "  - [ %s ] is not a directory, please insert an existing directory name" % coll_path)
 
     print_out("  ")
-    print_out(" type: %s -q " % get_exe_name())
+    print_out(" type: %s -q " % dr14.get_exe_name())
     print_out(" For more details and querying the database ")
-    print_out(
-        "---------------------------------------------------------------------------------------------- ")
+    print_out("---------------------------------------------------------------------------------------------- ")
 
     return (db_path, coll_path)
 
@@ -147,7 +142,7 @@ def fix_problematic_database():
     elif nr == 2:
         enable_db(False)
         print_out(" The database has been disabled ")
-        print_out(" Type: %s --enable_database " % get_exe_name())
+        print_out(" Type: %s --enable_database " % dr14.get_exe_name())
         print_out(" For enabling the database ")
         print_out("  ")
 
@@ -255,7 +250,6 @@ def extended_options(opt_nr):
 
 
 def query_helper():
-    subprocess.call("clear", shell=True)
     print_out("----- QUERY HELPER -----")
     print_out("  ")
     print_out(" Choose one of the following query: ")

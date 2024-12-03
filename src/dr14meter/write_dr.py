@@ -158,7 +158,7 @@ class WriteDr:
         tm.add_title("Official DR value:  DR%d" % int(drm.dr14))
 
         tm.append_empty_line()
-        tm.add_title("Dr14 T.meter %s " % dr14.dr14_version())
+        tm.add_title(dr14.get_name_version())
 
         tm.append_closing_line()
         tm.end_foot()
@@ -291,7 +291,7 @@ class WriteDrExtended(WriteDr):
         tm.add_title(" Bits per sample: \t\t %s bit" % (mf_bit))
 
         tm.append_empty_line()
-        tm.add_title("Dr14 T.meter %s " % dr14.dr14_version())
+        tm.add_title(dr14.get_name_version())
 
         tm.append_closing_line()
         tm.end_foot()
