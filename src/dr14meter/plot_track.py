@@ -21,7 +21,7 @@ import time
 import numpy as np
 from dr14meter.audio_math import *
 from dr14meter.out_messages import *
-from dr14meter.my_time_formatter import *
+from dr14meter.my_time_formatter import MyTimeFormatter
 
 try:
     import matplotlib.pyplot as pyplot
@@ -72,7 +72,7 @@ def plot_track(Y, Fs, Plot=True, time_range=None, utime=0):
         Yc[:] = 0.0
         Yc[0:s[0]] = Y[:, 1]
 
-        (H, xedges, yedges) = np.histogram2d(tm, Yc, bins=(sec, 500))
+        (H, xedges, yedges) = np.histogram2d(tm, Yc, bins=(int(sec), 500))
 
         mh = np.max(H, 1)
         H = (H.T * (1 / mh))

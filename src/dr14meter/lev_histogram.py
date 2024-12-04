@@ -39,19 +39,19 @@ def compute_lev_hist(Y, Fs, duration=None, bins=100, plot=True, title=None):
     Ym = numpy.sum(Y, 1) / float(ch)
 
     if plot:
-        (hist, bin_edges, patches) = pyplot.hist(Ym, 100, normed=True)
+        (hist, bin_edges, patches) = pyplot.hist(Ym, 100, density=True)
 
         pyplot.grid(True)
 
         if title != None:
             hist_title = title
         else:
-            hist_title = "Hystogram of levels"
+            hist_title = "Histogram of levels"
 
         pyplot.title(r'%s' % hist_title)
 
         pyplot.show()
     else:
-        (hist, bin_edges) = numpy.histogram(rms, bins=bins, normed=True)
+        (hist, bin_edges) = numpy.histogram(rms, bins=bins, density=True)
 
     return (hist, bin_edges)
