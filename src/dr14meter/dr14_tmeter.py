@@ -1,5 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
+# dr14meter: compute the DR14 value of the given audio files
+# Copyright (C) 2024  pe7ro
+#
 # dr14_t.meter: compute the DR14 value of the given audiofiles
 # Copyright (C) 2011  Simone Riva
 #
@@ -176,7 +179,7 @@ def main():
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         subprocess.call("stty sane", shell=True)
 
-    if not database_exists():
+    if not success and not database_exists():
         print_msg(" ")
         print_msg(" News ... News ... News ... News ... News  !!! ")
         print_msg(" Now there is the possibility to store all results in a database")

@@ -1,3 +1,6 @@
+# dr14meter: compute the DR14 value of the given audio files
+# Copyright (C) 2024  pe7ro
+#
 # dr14_t.meter: compute the DR14 value of the given audiofiles
 # Copyright (C) 2011  Simone Riva
 #
@@ -15,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy
-
 import wave
 
 

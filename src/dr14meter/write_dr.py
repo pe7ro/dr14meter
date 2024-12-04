@@ -1,3 +1,6 @@
+# dr14meter: compute the DR14 value of the given audio files
+# Copyright (C) 2024  pe7ro
+#
 # dr14_t.meter: compute the DR14 value of the given audiofiles
 # Copyright (C) 2011 - 2012  Simone Riva
 #
@@ -218,11 +221,10 @@ class WriteDrExtended(WriteDr):
         tm.append_separator_line()
 
         list_bit = []
+        sampl_rate = []
 
         sum_kbs = 0
         cnt = 0
-
-        sampl_rate = []
 
         d_nr = 0
 
@@ -263,11 +265,8 @@ class WriteDrExtended(WriteDr):
                     sum_kbs += int(kbs)
                     cnt = cnt + 1
 
-                if bit not in list_bit:
-                    list_bit.append(bit)
-
-                if s_rate not in sampl_rate:
-                    sampl_rate.append(s_rate)
+                list_bit.append(bit)
+                sampl_rate.append(s_rate)
 
                 tm.append_row(row)
 
@@ -281,14 +280,21 @@ class WriteDrExtended(WriteDr):
 
         tm.append_empty_line()
 
-        tm.add_title(" Sampling rate: \t\t %s Hz" % sampl_rate[0])
+        t = set(sampl_rate)
+        if len(t) > 1:
+            tm.add_title(f" Sampling rate: \t\t various - {sorted(t)} Hz")
+        else:
+            tm.add_title(f" Sampling rate: \t\t {t.pop()} Hz")
 
         if cnt > 0:
             tm.add_title(" Average bitrate: \t\t %d kbs " %
                          ((sum_kbs / 1000) / cnt))
 
-        mf_bit = max(set(list_bit), key=list_bit.count)
-        tm.add_title(" Bits per sample: \t\t %s bit" % (mf_bit))
+        t = set(list_bit)
+        if len(t) > 1:
+            tm.add_title(f" Bits per sample: \t\t various - {sorted(t)} bit")
+        else:
+            tm.add_title(f" Bits per sample: \t\t {t.pop()} bit")
 
         tm.append_empty_line()
         tm.add_title(dr14.get_name_version())

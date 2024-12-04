@@ -17,6 +17,8 @@ Use `pipx`.
 
 ```commandline
 pipx install dr14meter
+# or 
+pipx install --system-site-packages dr14meter
 ```
 
 Installing from a wheel file:
