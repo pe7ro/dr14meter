@@ -18,9 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import numpy
-from dr14meter.audio_math import *
-from dr14meter.out_messages import *
-from dr14meter.my_time_formatter import *
+import dr14meter.audio_math as am
+import dr14meter.out_messages as om
+from dr14meter.my_time_formatter import MyTimeFormatter
 
 import math
 import time
@@ -49,15 +49,15 @@ def dynamic_vivacity(Y, Fs, Plot=True):
 
     seg_cnt = int(math.floor(s[0] / samples_per_block) + 1)
 
-    seg_dyn = zeros((seg_cnt, ch))
+    seg_dyn = numpy.zeros((seg_cnt, ch))
 
     curr_sample = 0
     for i in range(seg_cnt - 1):
         #r = numpy.arange( curr_sample , curr_sample + samples_per_block )
-        rms = u_rms(Y[curr_sample: curr_sample + samples_per_block, :])
+        rms = am.u_rms(Y[curr_sample: curr_sample + samples_per_block, :])
         mx = numpy.max(Y[curr_sample: curr_sample + samples_per_block, :], 0)
-        seg_dyn[i, :] = decibel_u(mx, rms)
-        iz = (rms < audio_min())
+        seg_dyn[i, :] = am.decibel_u(mx, rms)
+        iz = (rms < am.audio_min())
         seg_dyn[i, iz] = 0.0
         curr_sample = curr_sample + samples_per_block
 
@@ -65,17 +65,17 @@ def dynamic_vivacity(Y, Fs, Plot=True):
     r = numpy.arange(curr_sample, s[0])
 
     if r.shape[0] > 0:
-        rms = u_rms(Y[r, :])
+        rms = am.u_rms(Y[r, :])
         mx = numpy.max(Y[r, :])
-        seg_dyn[i, :] = decibel_u(mx, rms)
-        iz = (rms < audio_min())
+        seg_dyn[i, :] = am.decibel_u(mx, rms)
+        iz = (rms < am.audio_min())
         seg_dyn[i, iz] = 0.0
 
     t = numpy.arange(0.0, math.floor((1.0 / Fs) * s[0]) + 1, step=block_size)
 
     max_db = numpy.max(seg_dyn)
 
-    non_zeros_ = seg_dyn >= audio_min()
+    non_zeros_ = seg_dyn >= am.audio_min()
 
     non_zeros = numpy.ones((seg_dyn.shape[0])) == 1
 
@@ -88,7 +88,7 @@ def dynamic_vivacity(Y, Fs, Plot=True):
     tot_t = s[0] * 1.0 / Fs
 
     time_b = time.time()
-    dr14_log_info("dynamic_vivacity: Clock: %2.8f" % (time_b - time_a))
+    om.dr14_log_info("dynamic_vivacity: Clock: %2.8f" % (time_b - time_a))
 
     if Plot:
         for j in range(ch):
