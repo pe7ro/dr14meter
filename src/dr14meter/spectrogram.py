@@ -43,8 +43,8 @@ def spectrogram(Y, Fs):
         pyplot.subplot(210 + j + 1)
         pylab.specgram(Y[:, j], NFFT=Fs, Fs=Fs, cmap='gnuplot2')
 
-        mean_x = numpy.array([0, s[0] * (1 / Fs)])
-        mean_x = numpy.array([mean, mean])
+        # mean_x = numpy.array([0, s[0] * (1 / Fs)])
+        # mean_x = numpy.array([mean, mean])
 
         pyplot.axis([0, s[0] * (1 / Fs), 0, Fs / 2.0])
 
