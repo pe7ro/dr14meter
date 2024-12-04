@@ -71,7 +71,7 @@ def compute_hist(Y, Fs, duration=None, bins=100, block_duration=0.2, plot=True, 
     abs_peak = decibel_u(numpy.max(numpy.abs(Y)), 1.0)
 
     if plot == True:
-        (hist, bin_edges, patches) = pyplot.hist(rms, 100, normed=True)
+        (hist, bin_edges, patches) = pyplot.hist(rms, 100, density=True)
 
         mean_x = numpy.array([rms_mean, rms_mean])
         mean_y = numpy.array([0.0, numpy.max(hist) * 1.01])
@@ -111,6 +111,6 @@ def compute_hist(Y, Fs, duration=None, bins=100, block_duration=0.2, plot=True, 
         pyplot.show()
 
     else:
-        (hist, bin_edges) = numpy.histogram(rms, bins=bins, normed=True)
+        (hist, bin_edges) = numpy.histogram(rms, bins=bins, density=True)
 
     return (hist, bin_edges)
