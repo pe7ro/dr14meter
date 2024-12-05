@@ -202,6 +202,7 @@ class OggFileReader(AudioFileReader):
     def get_cmd_options(self, file_name, tmp_file):
         return "--quiet " + "\"" + file_name + "\"" + " --output \"%s\"  " % tmp_file
 
+
 class OpusFileReader(AudioFileReader):
 
     def get_cmd(self):
@@ -209,6 +210,7 @@ class OpusFileReader(AudioFileReader):
 
     def get_cmd_options(self, file_name, tmp_file):
         return self.get_generic_ffmpeg_options(file_name, tmp_file)
+
 
 class ApeFileReader(AudioFileReader):
 
@@ -248,6 +250,7 @@ class WavFileReader(AudioFileReader):
     def get_cmd_options(self, file_name, tmp_file):
         return ""
 
+
 class WavpackFileReader(AudioFileReader):
 
     def read_audio_file_new(self, file_name, target):
@@ -259,6 +262,7 @@ class WavpackFileReader(AudioFileReader):
     def get_cmd_options(self, file_name, tmp_file):
         return ""
 
+
 class DsfFileReader(AudioFileReader):
 
     def get_cmd(self):
@@ -266,6 +270,7 @@ class DsfFileReader(AudioFileReader):
 
     def get_cmd_options(self, file_name, tmp_file):
         return self.get_generic_ffmpeg_options(file_name, tmp_file)
+
 
 class DffFileReader(AudioFileReader):
 

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dr14meter"
-version = "1.1.1a1"
+version = "1.1.1"
 description = "Compute the dynamic range DR14 value of the given audio files"
 keywords = ["dr14", "dynamic range", 'loudness war']
 authors = [
@@ -42,12 +42,12 @@ plot = [
 # scipy     1.13.1
 
 [project.urls]
-"Homepage" = "https://github.com/pe7ro/p7_dr14tmeter "
-"Bug Reports" = "https://github.com/pe7ro/p7_dr14tmeter /issues"
-"Source" = "https://github.com/pe7ro/p7_dr14tmeter "
+"Homepage" = "https://github.com/pe7ro/dr14meter"
+"Bug Reports" = "https://github.com/pe7ro/dr14meter/issues"
+"Source" = "https://github.com/pe7ro/dr14meter"
 
 [project.scripts]
-dr14meter = "dr14meter:main"
+dr14meter = "dr14meter.__main__:main"
 
 #[tool.setuptools]
 #packages = ["dr14tmeter"]

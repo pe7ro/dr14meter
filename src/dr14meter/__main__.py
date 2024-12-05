@@ -14,7 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# __all__ = ["dr14meter"]
+# __all__ = ["main"]
+
+import sys
+
+if (__package__ is None or len(__package__) == 0) and not getattr(sys, 'frozen', False):
+    import pathlib
+    path = pathlib.Path(__file__).resolve()
+    sys.path.insert(0, str(path.parent.parent))
 
 import dr14meter.dr14_tmeter as dr14
 
@@ -26,3 +33,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
