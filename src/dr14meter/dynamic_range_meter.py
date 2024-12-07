@@ -26,10 +26,7 @@ from dr14meter.compute_dr14 import compute_dr14
 from dr14meter.compute_dr import *
 from dr14meter.audio_track import *
 from dr14meter.table import *
-from dr14meter.plot.dr_histogram import *
-from dr14meter.plot.lev_histogram import *
-from dr14meter.plot.spectrogram import *
-from dr14meter.read_metadata import RetirveMetadata
+from dr14meter.read_metadata import RetrieveMetadata
 from dr14meter.audio_decoder import AudioDecoder
 from dr14meter.duration import StructDuration
 from dr14meter.write_dr import WriteDr, WriteDrExtended
@@ -62,7 +59,7 @@ class DynamicRangeMeter:
         self.res_list = []
         self.dir_name = ''
         self.dr14 = 0
-        self.meta_data = RetirveMetadata()
+        self.meta_data = RetrieveMetadata()
         self.compute_dr = ComputeDR14()
         self.__write_to_local_db = False
         self.coll_dir = os.path.realpath(get_collection_dir())

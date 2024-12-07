@@ -20,16 +20,17 @@
 
 import os
 
-from dr14meter.database import dr_database_singletone
 from dr14meter.table import *  # ExtendedTextTable
 from dr14meter.audio_analysis import *
 # from dr14meter.dr14_global import *
 import dr14meter.dr14_global as dr14
 from dr14meter.dr14_config import *  # get_db_path, enable_db, database_exists
 from dr14meter.write_dr import WriteDr, WriteDrExtended
-from dr14meter.query import *
 from dr14meter.out_messages import *  # print_out, print_err
 # from dr14meter.dr14_utils import *  # test_path_validity
+
+from dr14meter.database.database import dr_database_singletone
+from dr14meter.database.query import *
 
 import sys
 import re

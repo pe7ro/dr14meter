@@ -44,7 +44,7 @@ class UnreadableAudioFileException(Exception):
     pass
 
 
-class RetirveMetadata:
+class RetrieveMetadata:
 
     def __init__(self):
         self._album = {}

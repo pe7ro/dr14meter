@@ -26,12 +26,12 @@ from dr14meter.parse_args import parse_args
 from dr14meter.dynamic_range_meter import DynamicRangeMeter
 from dr14meter.table import *
 from dr14meter.audio_analysis import *
-from dr14meter.database import dr_database_singletone
 from dr14meter.dr14_global import get_exe_name, dr14_version
 from dr14meter.dr14_utils import *
 from dr14meter.out_messages import *  # print_err, print_msg, print_out, set_quiet_msg
 from dr14meter.dr14_config import *
-from dr14meter.database_utils import *
+from dr14meter.database.database import dr_database_singletone
+from dr14meter.database.database_utils import *
 
 import os
 import subprocess

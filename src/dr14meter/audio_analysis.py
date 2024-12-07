@@ -25,7 +25,7 @@ from dr14meter.audio_track import AudioTrack
 # from dr14meter.table import *
 from dr14meter.compressor import DynCompressor
 from dr14meter.wav_write import wav_write
-from dr14meter.read_metadata import RetirveMetadata
+from dr14meter.read_metadata import RetrieveMetadata
 from dr14meter.duration import StructDuration
 
 from dr14meter.plot.dr_histogram import compute_hist
@@ -50,7 +50,7 @@ class AudioAnalysis:
 
         self.file_name = file_name
 
-        self.meta_data = RetirveMetadata()
+        self.meta_data = RetrieveMetadata()
         self.meta_data.scan_file(self.file_name)
 
         self.duration = StructDuration()

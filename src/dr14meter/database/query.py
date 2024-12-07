@@ -20,7 +20,7 @@
 
 import sys
 
-from dr14meter.database import dr_database_singletone
+from dr14meter.database.database import dr_database_singletone
 
 
 def my_dict_factory(cursor, row):

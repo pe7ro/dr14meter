@@ -41,8 +41,7 @@ def wav_write(filename, Fs, Y):
     comptype = "NONE"
     compname = "no comp"
 
-    wav_file.setparams((nchannels, sampwidth, framerate,
-                        nframes, comptype, compname))
+    wav_file.setparams((nchannels, sampwidth, framerate, nframes, comptype, compname))
 
     Y_s = numpy.int16((amplitude / 2.0) * Y)
     Y_s = Y_s.tostring()

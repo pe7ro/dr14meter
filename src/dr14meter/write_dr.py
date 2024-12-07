@@ -21,7 +21,7 @@ import os
 import dr14meter.dr14_global as dr14
 import dr14meter.table as table
 
-from dr14meter.database import dr_database_singletone
+from dr14meter.database.database import dr_database_singletone
 
 
 class WriteDr:
