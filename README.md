@@ -11,9 +11,9 @@ Installation packages available at pypi: [https://pypi.org/project/dr14meter/]()
 
 DR14 T.meter is a free and open source command line tool for computing the Dynamic Range of your music 
 according to the procedure used in the off-line meter released by the Pleasurize Music Foundation. 
--[Link to the procedure's definition in PDF article](http://www.dynamicrange.de/sites/default/files/Measuring%20DR%20ENv3.pdf)-
+[Link to the procedure's definition in PDF article](http://www.dynamicrange.de/sites/default/files/Measuring%20DR%20ENv3.pdf)
 or
-[from web archive](https://web.archive.org/web/20180917133436/http://www.dynamicrange.de/sites/default/files/Measuring DR ENv3.pdf)
+[from web archive](https://web.archive.org/web/20180917133436/http://www.dynamicrange.de/sites/default/files/Measuring%20DR%20ENv3.pdf)
 
 This tool is very useful to measure how is loud your music and for understanding that a good quality album 
 always has also a good dynamic, and it's also useful for understanding the effects of the so called loudness war.

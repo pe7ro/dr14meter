@@ -19,7 +19,7 @@
 
 import numpy as np
 from dr14meter.audio_math import *
-from dr14meter.my_time_formatter import *
+from dr14meter.plot.my_time_formatter import *
 from dr14meter.out_messages import *
 
 try:
@@ -246,7 +246,7 @@ def plot_track_classic(Y=None, Fs=None, plot_str=None, utime=0.02, time_lim=5, s
 
     curr_sample = first_sample
 
-    if plot_str.mp != None and plot_str.mn != None and sz_section >= time_lim * Fs:
+    if plot_str.mp is not None and plot_str.mn is not None and sz_section >= time_lim * Fs:
         plot_str.plot_mode = "fill"
         plot_str.start_block = int(plot_str.start_time / block_len)
         plot_str.end_block = int(plot_str.end_time / block_len)

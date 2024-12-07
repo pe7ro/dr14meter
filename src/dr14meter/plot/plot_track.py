@@ -21,7 +21,7 @@ import time
 import numpy as np
 from dr14meter.audio_math import *
 from dr14meter.out_messages import *
-from dr14meter.my_time_formatter import MyTimeFormatter
+from dr14meter.plot.my_time_formatter import MyTimeFormatter
 
 try:
     import matplotlib.pyplot as pyplot

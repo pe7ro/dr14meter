@@ -20,7 +20,7 @@
 import numpy
 import dr14meter.audio_math as am
 import dr14meter.out_messages as om
-from dr14meter.my_time_formatter import MyTimeFormatter
+from dr14meter.plot.my_time_formatter import MyTimeFormatter
 
 import math
 import time

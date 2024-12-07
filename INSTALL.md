@@ -15,6 +15,8 @@ venv/bin/python3 -m pip install -e .
 # Debian
 Use `pipx`.
 
+# pipx / pip
+
 ```commandline
 pipx install dr14meter
 # or 
@@ -31,7 +33,7 @@ Uninstall:
 pipx uninstall dr14meter
 ```
 
-# Distribution
+# Distribution (uploading to pypi)
 
 ```commandline
 venv/bin/python3 -m pip install --upgrade build

@@ -23,16 +23,17 @@ import tempfile
 # from dr14meter.compute_dr import *
 from dr14meter.audio_track import AudioTrack
 # from dr14meter.table import *
-from dr14meter.dr_histogram import compute_hist
-from dr14meter.lev_histogram import compute_lev_hist
-from dr14meter.spectrogram import spectrogram
 from dr14meter.compressor import DynCompressor
 from dr14meter.wav_write import wav_write
 from dr14meter.read_metadata import RetirveMetadata
 from dr14meter.duration import StructDuration
-from dr14meter.dynamic_vivacity import dynamic_vivacity
-from dr14meter.plot_track import plot_track
-from dr14meter.plot_track_classic import plot_track_classic
+
+from dr14meter.plot.dr_histogram import compute_hist
+from dr14meter.plot.lev_histogram import compute_lev_hist
+from dr14meter.plot.spectrogram import spectrogram
+from dr14meter.plot.dynamic_vivacity import dynamic_vivacity
+from dr14meter.plot.plot_track import plot_track
+from dr14meter.plot.plot_track_classic import plot_track_classic
 
 from dr14meter.out_messages import print_msg
 

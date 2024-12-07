@@ -53,16 +53,11 @@ def get_ffmpeg_cmd():
 
     global ffmpeg_cmd
 
-    if ffmpeg_cmd == None:
-        ffmpeg_f = subprocess.call(
-            "type " + "ffmpeg", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
-        avconv_f = subprocess.call(
-            "type " + "avconv", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
-
-        if ffmpeg_f:
-            ffmpeg_cmd = "ffmpeg"
-        elif avconv_f:
-            ffmpeg_cmd = "avconv"
+    if ffmpeg_cmd is None:
+        for cmd in ['ffmpeg', 'avconv']:
+            if subprocess.call(f'type {cmd}', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0:
+                ffmpeg_cmd = cmd
+                break
 
     return ffmpeg_cmd
 
@@ -71,43 +66,29 @@ def get_home_url():
     return "https://github.com/pe7ro/p7_dr14meter"
 
 
-def test_matplotlib_modules(fun_name):
+def test_lib(lib_name, fun_name):
     try:
-        import matplotlib
+        __import__(lib_name)
+        # importlib.import_module(lib_name)
     except ImportError:
-        print_msg(
-            "The %s function require the installation of MatPlotLib: http://matplotlib.sourceforge.net" % fun_name)
+        print_msg(f"The {fun_name} function require the installation of {lib_name}")
         return False
 
     return True
+
+
+def test_matplotlib_modules(fun_name):
+    return test_lib('matplotlib', fun_name)
+
 
 def test_mutagen(fun_name):
-    try:
-        import mutagen
-    except ImportError:
-        print_msg(
-            "The %s function require the installation of MatPlotLib: http://matplotlib.sourceforge.net" % fun_name)
-        return False
+    return test_lib('mutagen', fun_name)
 
-    return True
 
 def test_hist_modules():
-    try:
-        import matplotlib
-    except ImportError:
-        print_msg(
-            "The histogram function require the installation of MatPlotLib: http://matplotlib.sourceforge.net")
-        return False
-
-    return True
+    return test_lib('matplotlib', 'histogram')
 
 
 def test_compress_modules():
-    try:
-        import scipy
-    except:
-        print_msg(
-            "The compression function require the installation of SciPy: http://www.scipy.org/")
-        return False
+    return test_lib('scipy', 'compression')
 
-    return True

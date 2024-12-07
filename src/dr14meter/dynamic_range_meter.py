@@ -26,9 +26,9 @@ from dr14meter.compute_dr14 import compute_dr14
 from dr14meter.compute_dr import *
 from dr14meter.audio_track import *
 from dr14meter.table import *
-from dr14meter.dr_histogram import *
-from dr14meter.lev_histogram import *
-from dr14meter.spectrogram import *
+from dr14meter.plot.dr_histogram import *
+from dr14meter.plot.lev_histogram import *
+from dr14meter.plot.spectrogram import *
 from dr14meter.read_metadata import RetirveMetadata
 from dr14meter.audio_decoder import AudioDecoder
 from dr14meter.duration import StructDuration
