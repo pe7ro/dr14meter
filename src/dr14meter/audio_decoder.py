@@ -44,32 +44,14 @@ class AudioDecoder:
 
         af = AudioFileReader()
 
-        if ext == '.mp3':
-            af = Mp3FileReader()
-        elif ext == '.flac':
-            af = FlacFileReader()
+        if ext in ['.mp3', '.flac', '.opus', '.mp4', '.m4a', '.ape', '.ac3', '.wma', '.dsf', '.dff',  '.wv',  ]:
+            af = AudioFileReader()
+        # if ext == '.mp3':
+        #     af = Mp3FileReader()
         elif ext == '.ogg':
             af = OggFileReader()
-        elif ext == '.opus':
-            af = OpusFileReader()
-        elif ext in ['.mp4', '.m4a']:
-            af = Mp4FileReader()
         elif ext == '.wav':
             af = WavFileReader()
-        elif ext == '.wav':
-            af = WavPackFileReader()
-        elif ext == '.wv':
-            af = ApeFileReader()
-        elif ext == '.ape':
-            af = ApeFileReader()
-        elif ext == '.ac3':
-            af = Ac3FileReader()
-        elif ext == '.wma':
-            af = WmaFileReader()
-        elif ext == '.dsf':
-            af = DsfFileReader()
-        elif ext == '.dff':
-            af = DffFileReader()
         else:
             return False
 

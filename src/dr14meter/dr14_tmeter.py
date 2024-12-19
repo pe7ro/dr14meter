@@ -179,6 +179,7 @@ def main():
                   (get_exe_name(), get_exe_name()))
 
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+        # todo fix:   stty: 'standard input': Inappropriate ioctl for device
         subprocess.call("stty sane", shell=True)
 
     if not success and not database_exists():

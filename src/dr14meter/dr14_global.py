@@ -63,13 +63,13 @@ def get_ffmpeg_cmd():
 
 
 def get_home_url():
-    return "https://github.com/pe7ro/p7_dr14meter"
+    return "https://github.com/pe7ro/dr14meter"
 
 
 def test_lib(lib_name, fun_name):
     try:
-        __import__(lib_name)
-        # importlib.import_module(lib_name)
+        # __import__(lib_name)
+        importlib.import_module(lib_name)
     except ImportError:
         print_msg(f"The {fun_name} function require the installation of {lib_name}")
         return False
