@@ -20,6 +20,7 @@
 import importlib.metadata
 import threading
 import subprocess
+import sys
 
 from dr14meter.out_messages import print_msg
 
