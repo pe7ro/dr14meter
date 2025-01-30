@@ -3,9 +3,9 @@ dr14meter is a free and open-source command line tool for computing the Dynamic 
 It is based on [simon-r/dr14_t.meter](https://github.com/simon-r/dr14_t.meter) which has not been updated for a while now.
 The goal is to provide bugfixes and occasional updates to the tool.
 
-For more info visit: [https://github.com/pe7ro/dr14meter]()
+For more info visit: <https://github.com/pe7ro/dr14meter>
 
-Installation packages available at pypi: [https://pypi.org/project/dr14meter/]()
+Installation packages available at pypi: <https://pypi.org/project/dr14meter/>
 
 ### Introduction to DR14 T.meter ###
 
