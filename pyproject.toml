@@ -5,14 +5,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dr14meter"
-version = "1.1.3"
+version = "1.1.4rc1"
 description = "Compute the dynamic range DR14 value of the given audio files"
 keywords = ["dr14", "dynamic range", 'loudness war']
 authors = [
     { name = "pe7ro", email = "44572319+pe7ro@users.noreply.github.com" }
 ]
 readme = "README.md"
-requires-python = ">=3.4"
+requires-python = ">=3.6"
+# https://devguide.python.org/versions/
 license = { text = "GPL-3.0+" }
 classifiers = [
     "Development Status :: 5 - Production/Stable",

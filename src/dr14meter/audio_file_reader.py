@@ -49,7 +49,13 @@ class AudioFileReader:
         self.__ffmpeg_cmd = get_ffmpeg_cmd()
 
         if sys.platform.startswith('win'):
-            self.__cmd = ".\\decoder\\%s " % self.get_cmd()
+            c = self.get_cmd()
+            if shutil.which(c):
+                self.__cmd = "%s " % self.get_cmd()
+            else:
+                # todo: fix #5 - is this ever the case?
+                print_msg(f'Unable to find "{c}" in PATH, fallback to ".\\decoder\\{c}"')
+                self.__cmd = ".\\decoder\\%s " % self.get_cmd()
         else:
             self.__cmd = "%s " % self.get_cmd()
 
