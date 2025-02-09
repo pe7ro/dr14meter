@@ -29,17 +29,11 @@ def float_formatter(el):
 
 
 def default_formatter(el):
-    if sys.version_info[0] == 2:
-        return unicode(el)
-    else:
-        return str(el)
+    return str(el)
 
 
 def string_formatter(el):
-    if sys.version_info[0] == 2:
-        return unicode(el)
-    else:
-        return str(el)
+    return str(el)
 
 
 class Table:
@@ -53,8 +47,6 @@ class Table:
 
         self.add_formatter(float, float_formatter)
         self.add_formatter(str, string_formatter)
-        if sys.version_info[0] == 2:
-            self.add_formatter(unicode, string_formatter)
 
     def _get_txt(self):
         return self.__txt

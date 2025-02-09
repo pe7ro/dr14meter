@@ -167,9 +167,6 @@ class DynamicRangeMeter:
 
     def scan_mp(self, dir_name="", thread_cnt=2, files_list=[]):
 
-        if sys.version_info[0] == 2:
-            dir_name = dir_name.decode('utf-8')
-
         self.dr14 = 0
 
         job_queue_sh = mp.JoinableQueue(2000)

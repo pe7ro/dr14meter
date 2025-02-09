@@ -19,8 +19,7 @@
 
 import importlib.metadata
 import threading
-import subprocess
-import sys
+import shutil
 
 from dr14meter.out_messages import print_msg
 
@@ -54,20 +53,12 @@ def get_ffmpeg_cmd():
 
     global ffmpeg_cmd
 
-    if ffmpeg_cmd is None:
-        for cmd in ['ffmpeg', 'avconv']:
-            if sys.platform.startswith('win'):
-                cmd_exists = subprocess.call(f'where {cmd}', shell=True, stdout=subprocess.PIPE,
-                                             stderr=subprocess.PIPE) == 0
-            else:
-                cmd_exists = subprocess.call(f'type {cmd}', shell=True, stdout=subprocess.PIPE,
-                                             stderr=subprocess.PIPE) == 0
-            if cmd_exists:
-                ffmpeg_cmd = cmd
-                break
-    # issue #4: if nothing works fallback to ffmpeg... maybe it will work for some reason. Still better than None
-    if ffmpeg_cmd is None:
-        ffmpeg_cmd = 'ffmpeg'
+    if ffmpeg_cmd is not None:
+        return ffmpeg_cmd
+
+    if not shutil.which('ffmpeg'):
+        print_msg('ffmpeg not found in PATH')
+    ffmpeg_cmd = 'ffmpeg'
     return ffmpeg_cmd
 
 

@@ -53,10 +53,7 @@ def local_dr_database_configure():
         print_out("  1. Insert the database directory: Default [%s]:" % os.path.split(
             get_db_path())[0])
 
-        if sys.version_info[0] == 2:
-            db_path = raw_input("     > ")
-        else:
-            db_path = input("     > ")
+        db_path = input("     > ")
 
         db_path = os.path.expanduser(db_path)
         db_path = os.path.expandvars(db_path)
@@ -89,10 +86,7 @@ def local_dr_database_configure():
         print_out(
             "  2. Insert your collection directory: Default [%s] " % "any")
 
-        if sys.version_info[0] == 2:
-            coll_path = raw_input("     > ")
-        else:
-            coll_path = input("     > ")
+        coll_path = input("     > ")
 
         coll_path = os.path.expanduser(coll_path)
         coll_path = os.path.expandvars(coll_path)
@@ -205,10 +199,7 @@ def input_number(p=" > ", rng=(0, 2**31)):
     flag = True
 
     while flag:
-        if sys.version_info[0] == 2:
-            nr = raw_input(" > ")
-        else:
-            nr = input(" > ")
+        nr = input(" > ")
 
         try:
             nr = int(nr)
@@ -278,10 +269,7 @@ def query_helper():
     if nr in [1, 2, 3, 5, 6]:
         print_out(
             " Do you want to set the query extended options? [N/y] (default: No)")
-        if sys.version_info[0] == 2:
-            an = raw_input(" > ")
-        else:
-            an = input(" > ")
+        an = input(" > ")
 
         if an.lower() in ["y", "yes"]:
             ext_opt = extended_options(nr)

@@ -22,10 +22,7 @@ import os.path
 import os
 import sys
 
-if sys.version_info[0] == 2:
-    import ConfigParser
-else:
-    import configparser as ConfigParser
+import configparser as ConfigParser
 
 
 def get_config_directory(create=True):

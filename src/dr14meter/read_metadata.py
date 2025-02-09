@@ -28,13 +28,6 @@ import numpy as np
 from dr14meter.audio_decoder import AudioDecoder
 from dr14meter.dr14_global import get_ffmpeg_cmd
 
-if sys.version_info[0] == 2:
-    import ConfigParser
-else:
-    import configparser as ConfigParser
-
-from io import StringIO
-
 
 # Test example !!!!!
 # a = subprocess.check_output( [ "ffprobe" , "-show_format" , "/media/esterno_xfs/data/Musica/Musica/aavv/01-blitzkrieg_bop_160_lame_abr.mp3" ] , stderr=subprocess.STDOUT , shell=False )
@@ -52,13 +45,12 @@ class RetrieveMetadata:
         self._tracks = {}
         self._disk_nr = []
 
-        if get_ffmpeg_cmd() == "ffmpeg":
-            self.__ffprobe_cmd = "ffprobe"
-            self.__scan_file = self.scan_file_ffprobe
-        elif get_ffmpeg_cmd() == "avconv":
-            self.__ffprobe_cmd = "avprobe"
-            self.__scan_file = self.scan_file_avprobe
+        if get_ffmpeg_cmd() != "ffmpeg":
+            pass
 
+        self.__ffprobe_cmd = "ffprobe"
+        self.__scan_file = self.scan_file_ffprobe
+        # fixme is scan_file_ffprobe ever used?
         self.__scan_file = self.scan_file_orig
 
     def scan_dir(self, dir_name, files_list=None):
@@ -127,12 +119,10 @@ class RetrieveMetadata:
 
         m = re.search(r"^\s*track\s*\:\s*(\d+).*$", data_txt, re_flags)
         if m != None:
-            #track['nr'] = int( m.group(1) )
             track['track_nr'] = int(m.group(1))
 
         m = re.search(r"^\s*album\s*\:%s" % pattern, data_txt, re_flags)
         if m != None:
-            #print( m.group(1) )
             track['album'] = self.match_repetitive_title(m.group(1))
             self._album.setdefault(track['album'], 0)
             self._album[track['album']] += 1
@@ -183,16 +173,14 @@ class RetrieveMetadata:
         except:
             data_txt = "ffprobe ERROR"
 
+        (foo, f_key) = os.path.split(file_name)
+
         if data_txt != "ffprobe ERROR":
             try:
                 data_txt = data_txt.decode(encoding='UTF-8')
             except:
                 data_txt = data_txt.decode(encoding='ISO-8859-1')
 
-        track = {}
-        (foo, f_key) = os.path.split(file_name)
-
-        track['file_name'] = file_name
 
         re_flags = (re.MULTILINE | re.IGNORECASE | re.UNICODE)
 
@@ -204,16 +192,31 @@ class RetrieveMetadata:
             self._tracks[f_key] = None
             raise UnreadableAudioFileException("problematic file: file_name")
 
+        track = {}
+
+        track['file_name'] = file_name
+
         pattern = r"[ \t\f\v]*([\S \t\f\v]+\S).*$"
 
         m = re.search(r"^TAG:track=\s*(\d+).*$", format_tags, re_flags)
         if m != None:
             track['track_nr'] = int(m.group(1))
 
-        m = re.search(r"^TAG:disc=\s*(\d+).*$", format_tags, re_flags)
+        m = re.search(r"^TAG:ALBUM=%s" % pattern, format_tags, re_flags)
         if m != None:
-            track['disk_nr'] = int(m.group(1))
-            self._disk_nr.append(int(int(m.group(1))))
+            self._album.setdefault(m.group(1), 0)
+            self._album[m.group(1)] += 1
+            track['album'] = m.group(1)
+
+        m = re.search(r"^TAG:TITLE=%s" % pattern, format_tags, re_flags)
+        if m != None:
+            track['title'] = m.group(1)
+
+        m = re.search(r"^TAG:ARTIST=%s" % pattern, format_tags, re_flags)
+        if m != None:
+            self._artist.setdefault(m.group(1), 0)
+            self._artist[m.group(1)] += 1
+            track['artist'] = m.group(1)
 
         m = re.search(r"^TAG:GENRE=%s" % pattern, format_tags, re_flags)
         if m != None:
@@ -223,21 +226,10 @@ class RetrieveMetadata:
         if m != None:
             track['date'] = m.group(1)
 
-        m = re.search(r"^TAG:ARTIST=%s" % pattern, format_tags, re_flags)
+        m = re.search(r"^TAG:disc=\s*(\d+).*$", format_tags, re_flags)
         if m != None:
-            self._artist.setdefault(m.group(1), 0)
-            self._artist[m.group(1)] += 1
-            track['artist'] = m.group(1)
-
-        m = re.search(r"^TAG:TITLE=%s" % pattern, format_tags, re_flags)
-        if m != None:
-            track['title'] = m.group(1)
-
-        m = re.search(r"^TAG:ALBUM=%s" % pattern, format_tags, re_flags)
-        if m != None:
-            self._album.setdefault(m.group(1), 0)
-            self._album[m.group(1)] += 1
-            track['album'] = m.group(1)
+            track['disk_nr'] = int(m.group(1))
+            self._disk_nr.append(int(int(m.group(1))))
 
         m = re.search(r"^size=\s*(\d+)\s*$", format_tags, re_flags)
         if m != None:
@@ -246,96 +238,6 @@ class RetrieveMetadata:
         m = re.search(r"^bit_rate=\s*(\d+)\s*$", format_tags, re_flags)
         if m != None:
             track['bitrate'] = m.group(1)
-
-        self.__read_stream_info(data_txt, track)
-
-        self._tracks[f_key] = track
-
-    def scan_file_avprobe(self, file_name):
-        try:
-            data_txt = subprocess.check_output(
-                [self.__ffprobe_cmd, "-show_format", "-show_streams", file_name], stderr=subprocess.STDOUT, shell=False)
-        except:
-            data_txt = "ffprobe ERROR"
-
-        if data_txt != "ffprobe ERROR":
-            try:
-                data_txt = data_txt.decode(encoding='UTF-8')
-            except:
-                data_txt = data_txt.decode(encoding='ISO-8859-1')
-
-        track = {}
-        (foo, f_key) = os.path.split(file_name)
-
-        track['file_name'] = file_name
-
-        re_flags = (re.MULTILINE | re.IGNORECASE | re.UNICODE)
-
-        m = re.search(r"(\[format\].*)", data_txt, re_flags | re.DOTALL)
-        if m != None:
-            format_tags = m.group(1)
-        else:
-            self._tracks[f_key] = None
-            raise UnreadableAudioFileException("problematic file: file_name")
-
-        buf = StringIO(format_tags)
-        config = ConfigParser.ConfigParser()
-        config.readfp(buf)
-
-        try:
-            track['title'] = config.get("format.tags", "title")
-            self._album.setdefault(m.group(1), 0)
-            self._album[m.group(1)] += 1
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['track_nr'] = config.getint("format.tags", "track")
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['disk_nr'] = config.get("format.tags", "disc")
-            track['disk_nr'] = int(
-                re.search(r"(\d+)", track['disk_nr']).group(1))
-            self._disk_nr.append(track['disk'])
-        except ConfigParser.NoOptionError:
-            pass
-        except:
-            del track['disk_nr']
-
-        try:
-            track['genre'] = config.get("format.tags", "genre")
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['date'] = config.get("format.tags", "date")
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['artist'] = config.get("format.tags", "artist")
-            self._artist.setdefault(m.group(1), 0)
-            self._artist[m.group(1)] += 1
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['album'] = config.get("format.tags", "album")
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['size'] = str(int(config.getfloat("format.tags", "size")))
-        except ConfigParser.NoOptionError:
-            pass
-
-        try:
-            track['bitrate'] = str(
-                int(config.getfloat("format.tags", "bit_rate")))
-        except ConfigParser.NoOptionError:
-            pass
 
         self.__read_stream_info(data_txt, track)
 
@@ -414,10 +316,7 @@ class RetrieveMetadata:
         else:
             p_title = title
 
-        if sys.version_info[0] == 2:
-            str_conv = unicode
-        else:
-            str_conv = str
+        str_conv = str
 
         key_string = str_conv("")
         #key_string = key_string + str_conv( p_title ) + str_conv( self.get_album_artist() )
