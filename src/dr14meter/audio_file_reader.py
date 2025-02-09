@@ -25,6 +25,7 @@ import subprocess
 import re
 import wave
 import numpy
+import shutil
 
 
 from dr14meter.out_messages import print_msg, dr14_log_info
