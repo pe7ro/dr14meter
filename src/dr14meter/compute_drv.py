@@ -22,7 +22,7 @@ from numpy import *
 from dr14meter.audio_math import *
 import numpy
 
-
+# todo: why is it never used
 def compute_DRV(Y, Fs, duration=None, Dr_lr=None):
 
     s = Y.shape
@@ -85,12 +85,12 @@ def compute_DRV(Y, Fs, duration=None, Dr_lr=None):
 
     dB_rms = numpy.sum(numpy.mean(rms, 0)) / 2.0
 
-    if duration != None:
+    if duration is not None:
         duration.tm_min = int(s[0] * (1.0 / Fs) / 60.0)
         duration.tm_sec = int(
             ((s[0] * (1.0 / Fs) / 60.0) - duration.tm_min) * 60.0)
 
-    if Dr_lr != None:
+    if Dr_lr is not None:
         Dr_lr = ch_dr14
 
     return (drV, dB_peak, dB_rms)

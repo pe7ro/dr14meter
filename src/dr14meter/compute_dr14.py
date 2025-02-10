@@ -101,10 +101,10 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
 
     db_rms = decibel_u(y_rms, 1.0)
 
-    if duration != None:
+    if duration is not None:
         duration.set_samples(s[0], Fs)
 
-    if Dr_lr != None:
+    if Dr_lr is not None:
         Dr_lr = ch_dr14
 
     time_b = time.time()
