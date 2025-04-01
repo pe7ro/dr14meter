@@ -1,5 +1,5 @@
 build/
-venv/
+venv*/
 .idea
 src/*.egg-info
 dist/

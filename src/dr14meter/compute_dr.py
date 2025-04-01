@@ -33,12 +33,6 @@ class ComputeAudio:
     def compute(self, Y, Fs):
         pass
 
-    def get_duration(self):
-        return self.duration
-
-    def get_dr_lr(self):
-        return self.Dr_lr
-
 
 class ComputeDR14(ComputeAudio):
 

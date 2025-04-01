@@ -29,7 +29,8 @@ import sys
 from dr14meter import dr14_global
 from dr14meter import dr14_config as config
 from dr14meter import audio_analysis as aa
-from dr14meter.dynamic_range_meter import DynamicRangeMeter, TextTable, BBcodeTable, HtmlTable, MediaWikiTable
+from dr14meter.dynamic_range_meter import DynamicRangeMeter #,
+from dr14meter.table import TextTable, BBcodeTable, HtmlTable, MediaWikiTable
 from dr14meter.out_messages import print_msg
 
 
@@ -83,10 +84,10 @@ def scan_dir_list(subdirlist, options, out_dir):
         print_msg("> Scan Dir: %s \n" % cur_dir)
 
         if options.disable_multithread:
-            r = dr.scan_dir(cur_dir)
+            cpu = 1
         else:
             cpu = get_thread_cnt()
-            r = dr.scan_mp(cur_dir, cpu)
+        r = dr.scan_mp(cur_dir, cpu)
 
         if options.tag:
             tagger = Tagger()

@@ -26,6 +26,7 @@ class AudioTrack:
 
     def __init__(self):
         self.Y = numpy.array([])
+        # e.g. 44100
         self.Fs = 0
         self.channels = 0
         self.sample_width = 0

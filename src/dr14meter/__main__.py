@@ -23,15 +23,10 @@ if (__package__ is None or len(__package__) == 0) and not getattr(sys, 'frozen',
     path = pathlib.Path(__file__).resolve()
     sys.path.insert(0, str(path.parent.parent))
 
-import dr14meter.dr14_tmeter as dr14
-
-
-def main():
-    """Entry point for the application script"""
-    dr14.main()
+import dr14meter.dr14_main as dr14
 
 
 if __name__ == '__main__':
-    main()
+    dr14.main()
 
 

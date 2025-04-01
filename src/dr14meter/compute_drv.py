@@ -18,9 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from numpy import *
 from dr14meter.audio_math import *
-import numpy
+
+import numpy as np
 
 # todo: why is it never used
 def compute_DRV(Y, Fs, duration=None, Dr_lr=None):
@@ -36,18 +36,17 @@ def compute_DRV(Y, Fs, duration=None, Dr_lr=None):
     block_samples = block_time * (Fs)
 
     threshold = 0.15
-    seg_cnt = int(floor(s[0] / block_samples))
+    seg_cnt = int(np.floor(s[0] / block_samples))
 
     if seg_cnt < 3:
         return (0, -100, -100)
 
     curr_sam = 0
-
-    rms = zeros((seg_cnt, ch))
-    peaks = zeros((seg_cnt, ch))
+    rms = np.zeros((seg_cnt, ch))
+    peaks = np.zeros((seg_cnt, ch))
 
     for i in range(seg_cnt - 1):
-        r = arange(curr_sam, curr_sam + block_samples)
+        r = np.arange(curr_sam, curr_sam + block_samples)
 
         rms[i, :] = decibel_u(u_rms(Y[r, :]), 1.0)
         peaks[i, :] = decibel_u(numpy.max(numpy.abs(Y[r, :])), 1.0)
@@ -86,11 +85,9 @@ def compute_DRV(Y, Fs, duration=None, Dr_lr=None):
     dB_rms = numpy.sum(numpy.mean(rms, 0)) / 2.0
 
     if duration is not None:
-        duration.tm_min = int(s[0] * (1.0 / Fs) / 60.0)
-        duration.tm_sec = int(
-            ((s[0] * (1.0 / Fs) / 60.0) - duration.tm_min) * 60.0)
+        duration.set_samples(s[0], Fs)
 
-    if Dr_lr is not None:
-        Dr_lr = ch_dr14
+    # if Dr_lr is not None:
+    #     Dr_lr = ch_dr14
 
     return (drV, dB_peak, dB_rms)

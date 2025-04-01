@@ -83,8 +83,7 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
 
     rms_sum = np.sum(rms[r, :]**2, 0)
 
-    ch_dr14 = -20.0 * np.log10(np.sqrt(rms_sum / n_blk)
-                               * 1.0 / peaks[seg_cnt - 2, :])
+    ch_dr14 = -20.0 * np.log10(np.sqrt(rms_sum / n_blk) * 1.0 / peaks[seg_cnt - 2, :])
 
     err_i = np.logical_or(rms_sum < audio_min(),
                           np.abs(ch_dr14) > max_dynamic(24))

@@ -105,13 +105,11 @@ class AudioFileReader:
         file_name = re.sub(r"(\"|`|\$)", r"\\\1", file_name)
         tmp_file = re.sub(r"(\"|`|\$)", r"_xyz_", tmp_file)
 
-        full_command = full_command + " " + \
-            self.get_cmd_options(file_name, tmp_file)
+        full_command = full_command + " " + self.get_cmd_options(file_name, tmp_file)
 
         #print_msg( full_command )
 
-        r = subprocess.Popen(full_command, shell=True,
-                            stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        r = subprocess.Popen(full_command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
         stdout_data, stderr_data = r.communicate()
 
         #read_wav.read_wav( tmp_file )

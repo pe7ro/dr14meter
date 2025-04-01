@@ -42,8 +42,6 @@ class AudioDecoder:
         if ext not in self.formats:
             return False
 
-        af = AudioFileReader()
-
         if ext in ['.mp3', '.flac', '.opus', '.mp4', '.m4a', '.ape', '.ac3', '.wma', '.dsf', '.dff',  '.wv',  ]:
             af = AudioFileReader()
         # if ext == '.mp3':
