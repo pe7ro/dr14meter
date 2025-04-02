@@ -193,8 +193,6 @@ class WriteDrExtended(WriteDr):
 
         if self.get_loudness_war_db_compatible():
 
-            title = ""
-
             if album_t == None:
                 title = " Analyzed folder:  " + album_dir
             else:
@@ -243,13 +241,13 @@ class WriteDrExtended(WriteDr):
 
                 tr_title = drm.meta_data.get_value(curr_file_name, 'title')
                 #print( "> " + tr_title )
-                if tr_title == None:
+                if tr_title is None:
                     row.append(drm.res_list[i]['file_name'])
                 else:
                     nr = drm.meta_data.get_value(curr_file_name, 'track_nr')
                     codec = drm.meta_data.get_value(curr_file_name, 'codec')
 
-                    if nr == None:
+                    if nr is None:
                         nr = i + 1
 
                     row.append("%02d - %s \t [%s]" % (nr, tr_title, codec))
@@ -261,7 +259,7 @@ class WriteDrExtended(WriteDr):
 
                 kbs = drm.meta_data.get_value(curr_file_name, 'bitrate')
 
-                if kbs != None:
+                if kbs is not None:
                     sum_kbs += int(kbs)
                     cnt = cnt + 1
 

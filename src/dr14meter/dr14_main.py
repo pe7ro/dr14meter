@@ -27,11 +27,11 @@ from dr14meter.dynamic_range_meter import DynamicRangeMeter
 from dr14meter.table import *
 from dr14meter.audio_analysis import *
 from dr14meter.dr14_global import get_exe_name, dr14_version
-from dr14meter.dr14_utils import *
-from dr14meter.out_messages import *  # print_err, print_msg, print_out, set_quiet_msg
-from dr14meter.dr14_config import *
+from dr14meter.dr14_utils import run_analysis_opt, list_rec_dirs, scan_dir_list, scan_files_list
+from dr14meter.out_messages import print_err, print_msg, print_out, set_quiet_msg, init_log
+from dr14meter.dr14_config import enable_db, db_is_enabled, database_exists
 from dr14meter.database.database import dr_database_singletone
-from dr14meter.database.database_utils import *
+from dr14meter.database.database_utils import enable_database, query_helper, fix_problematic_database, database_exec_query
 
 import os
 import subprocess
@@ -131,8 +131,7 @@ def main():
     if options.recursive:
         subdirlist = list_rec_dirs(path_name)
     else:
-        subdirlist = []
-        subdirlist.append(path_name)
+        subdirlist = [path_name]
 
     if run_analysis_opt(options, path_name):
         return 1

@@ -45,11 +45,12 @@ class RetrieveMetadata:
         self._tracks = {}
         self._disk_nr = []
 
-        if get_ffmpeg_cmd() != "ffmpeg":
-            pass
+        get_ffmpeg_cmd()
+        # if get_ffmpeg_cmd() != "ffmpeg":
+        #     pass
 
         self.__ffprobe_cmd = "ffprobe"
-        self.__scan_file = self.scan_file_ffprobe
+        # self.__scan_file = self.scan_file_ffprobe
         # fixme is scan_file_ffprobe ever used?
         self.__scan_file = self.scan_file_orig
 
@@ -60,7 +61,7 @@ class RetrieveMetadata:
         self._artist = {}
         self._disk_nr = []
 
-        if files_list == None:
+        if files_list is None:
             dir_name = os.path.abspath(dir_name)
             files_list = sorted(os.listdir(dir_name))
 

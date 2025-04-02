@@ -83,10 +83,7 @@ def scan_dir_list(subdirlist, options, out_dir):
         print_msg("\n------------------------------------------------------------ ")
         print_msg("> Scan Dir: %s \n" % cur_dir)
 
-        if options.disable_multithread:
-            cpu = 1
-        else:
-            cpu = get_thread_cnt()
+        cpu = 1 if options.disable_multithread else get_thread_cnt()
         r = dr.scan_mp(cur_dir, cpu)
 
         if options.tag:
@@ -129,24 +126,17 @@ def list_rec_dirs(basedir, subdirlist=None):
 def write_results(dr, options, out_dir, cur_dir):
     table_format = not options.basic_table
 
-    if out_dir is None:
-        full_out_dir = os.path.join(cur_dir)
-    else:
-        full_out_dir = out_dir
+    full_out_dir = os.path.join(cur_dir) if out_dir is None else out_dir
 
     print_msg("DR = " + str(dr.dr14))
 
     if not (os.access(full_out_dir, os.W_OK)):
         full_out_dir = tempfile.gettempdir()
-        print_msg(
-            "--------------------------------------------------------------- ")
+        print_msg("--------------------------------------------------------------- ")
         print_msg("- ATTENTION !")
-        print_msg(
-            "- You do not have the write permission for the directory: %s " % full_out_dir)
-        print_msg(
-            "- The result files will be written in the tmp dir: %s " % full_out_dir)
-        print_msg(
-            "--------------------------------------------------------------- ")
+        print_msg("- You do not have the write permission for the directory: %s " % full_out_dir)
+        print_msg("- The result files will be written in the tmp dir: %s " % full_out_dir)
+        print_msg("--------------------------------------------------------------- ")
 
     if options.print_std_out:
         dr.fwrite_dr("", TextTable(), table_format, True)

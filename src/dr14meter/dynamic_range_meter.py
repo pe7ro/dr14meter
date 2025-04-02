@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import concurrent.futures
 import os
+import pathlib
 import sys
 import codecs
 
@@ -30,25 +31,10 @@ from dr14meter.duration import StructDuration
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.audio_math import sha1_track_v1
 from dr14meter.dr14_config import get_collection_dir
-from dr14meter.out_messages import print_msg, flush_msg
 
-import dr14meter.dr14_global as dr14
+from dr14meter.dr14_global import min_dr
 
-from dr14meter.out_messages import print_msg, print_out
-
-
-class SharedDrResObj:
-
-    def __init__(self):
-        self.track_nr = -1
-        self.file_name = ""
-        self.dr14 = dr14.min_dr()
-        self.dB_peak = 0.0
-        self.dB_rms = 0.0
-        self.duration = ""
-        self.sha1 = ""
-        self.fail = False
-        self.dir_name = ""
+from dr14meter.out_messages import print_msg, print_out, flush_msg
 
 
 class DynamicRangeMeter:
@@ -130,11 +116,7 @@ class DynamicRangeMeter:
 
     def fwrite_dr(self, file_name, tm, ext_table=False, std_out=False, append=False, dr_database=True):
 
-        if ext_table:
-            wr = WriteDrExtended()
-        else:
-            wr = WriteDr()
-
+        wr = WriteDrExtended() if ext_table else WriteDr()
         wr.set_loudness_war_db_compatible(dr_database)
 
         self.table_txt = wr.write_dr(self, tm)
@@ -155,7 +137,7 @@ class DynamicRangeMeter:
         out_file.close()
         return True
 
-    def scan_mp(self, dir_name="", thread_cnt=None, files_list=[]):
+    def scan_mp(self, dir_name="", thread_cnt=None, files_list=None):
 
         self.dr14 = 0
 
@@ -174,27 +156,23 @@ class DynamicRangeMeter:
         for file_name in dir_list:
             (fn, ext) = os.path.splitext(file_name)
             if ext in ad.formats:
-                job = SharedDrResObj()
-                job.file_name = file_name
-                job.dir_name = dir_name
-                job_queue.append(job)
+                full_file = pathlib.Path(dir_name, file_name)
+                job_queue.append(full_file)
 
         with concurrent.futures.ProcessPoolExecutor(max_workers=thread_cnt) as executor:
-            results = list(executor.map(self.run_mp, job_queue))
-        self.res_list = []
-        for res in results:
-            self.res_list.append({'file_name':   res.file_name,
-                                  'dr14':        res.dr14,
-                                  'dB_peak':     res.dB_peak,
-                                  'dB_rms':      res.dB_rms,
-                                  'duration':    StructDuration.float_to_str(res.duration),
-                                  'sha1':        res.sha1})
+            results = list(executor.map(run_mp, job_queue))
 
+        if len(results) !=  len(job_queue):
+            # #6 DR14 Report File Missing Tracks That Appear in Console Output
+            print(f'!!! LOST FILES {len(job_queue)} vs {len(results)}')
+            raise Exception(f'!!! LOST FILES {len(job_queue)} vs {len(results)}')
+
+        self.res_list = [x for x in results if not x['fail']]
         self.res_list = sorted(self.res_list, key=lambda res: res['file_name'])
 
         succ = 0
         for d in self.res_list:
-            if d['dr14'] > dr14.min_dr():
+            if d['dr14'] > min_dr():
                 self.dr14 = self.dr14 + d['dr14']
                 succ = succ + 1
 
@@ -206,28 +184,32 @@ class DynamicRangeMeter:
         else:
             return 0
 
-    def run_mp(self, job):
+def run_mp(full_file: pathlib.Path):
 
-        at = AudioTrack()
-        duration = StructDuration()
+    at = AudioTrack()
+    duration = StructDuration()
 
-        full_file = os.path.join(job.dir_name, job.file_name)
+    if at.open(str(full_file)):
+        dr14, dB_peak, dB_rms = compute_dr14(at.Y, at.Fs, duration)
+        sha1 = sha1_track_v1(at.Y, at.get_file_ext_code())
 
-        if at.open(full_file):
-            (dr14, dB_peak, dB_rms) = compute_dr14(at.Y, at.Fs, duration)
-            sha1 = sha1_track_v1(at.Y, at.get_file_ext_code())
+        print_msg(full_file.name + ": \t DR " + str(int(dr14)))
+        flush_msg()
 
-            print_msg(job.file_name + ": \t DR " + str(int(dr14)))
-            flush_msg()
+        return {
+            'file_name': full_file.name,
+            'dr14': dr14,
+            'dB_peak': dB_peak,
+            'dB_rms': dB_rms,
+            'duration': StructDuration.float_to_str(duration.to_float()),
+            'sha1': sha1,
+            'fail': False,
+        }
+    else:
+        print_msg(f"- fail - {full_file}")
+        return {
+            'file_name': full_file.name,
+            'fail': True,
+        }
 
-            job.dr14 = dr14
-            job.dB_peak = dB_peak
-            job.dB_rms = dB_rms
-            job.duration = duration.to_float()
-            job.sha1 = sha1
-
-            return job
-        else:
-            job.fail = True
-            print_msg(f"- fail - {full_file}")
 
