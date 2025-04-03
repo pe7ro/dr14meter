@@ -43,8 +43,6 @@ class AudioAnalysis:
     def compute_track(self, file_name):
         self.at = AudioTrack()
 
-        (head,  file_n) = os.path.split(file_name)
-
         if not self.at.open(file_name):
             return False
 

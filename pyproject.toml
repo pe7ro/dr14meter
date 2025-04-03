@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dr14meter"
-version = "1.1.5a1"
+version = "1.1.5a2"
 description = "Compute the dynamic range DR14 value of the given audio files"
 keywords = ["dr14", "dynamic range", 'loudness war']
 authors = [

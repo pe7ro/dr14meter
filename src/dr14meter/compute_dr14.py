@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from dr14meter.audio_math import *
-from dr14meter.out_messages import *
+from dr14meter.audio_math import audio_min, max_dynamic, decibel_u, dr_rms
+from dr14meter.out_messages import dr14_log_debug, dr14_log_info
 
 import numpy as np
 
@@ -41,8 +41,7 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
     else:
         delta_fs = 0
 
-    dr14_log_debug("compute_dr14: Y: Fs: %d ; ch: %d ; shape: %d " %
-                   (Fs, ch, s[0]))
+    dr14_log_debug("compute_dr14: Y: Fs: %d ; ch: %d ; shape: %d " % (Fs, ch, s[0]))
     time_a = time.time()
 
     block_time = 3
@@ -53,7 +52,7 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
 
     if seg_cnt < 1:
         dr14_log_debug("compute_dr14: EXIT - too short")
-        return (0, -100, -100)
+        return 0, -100, -100
 
     curr_sam = 0
     rms = np.zeros((seg_cnt, ch))
@@ -62,8 +61,7 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
     for i in range(seg_cnt - 1):
         rms[i, :] = np.sqrt(2.0 * np.sum(Y[curr_sam:curr_sam + block_samples, :]**2.0, 0) /
                             float(block_samples))
-        peaks[i, :] = np.max(
-            np.abs(Y[curr_sam:curr_sam + block_samples, :]), 0)
+        peaks[i, :] = np.max(np.abs(Y[curr_sam:curr_sam + block_samples, :]), 0)
         curr_sam = curr_sam + block_samples
 
     i = seg_cnt - 1
@@ -85,8 +83,7 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
 
     ch_dr14 = -20.0 * np.log10(np.sqrt(rms_sum / n_blk) * 1.0 / peaks[seg_cnt - 2, :])
 
-    err_i = np.logical_or(rms_sum < audio_min(),
-                          np.abs(ch_dr14) > max_dynamic(24))
+    err_i = np.logical_or(rms_sum < audio_min(), np.abs(ch_dr14) > max_dynamic(24))
     ch_dr14[err_i] = 0.0
 
     dr14 = round(np.mean(ch_dr14))

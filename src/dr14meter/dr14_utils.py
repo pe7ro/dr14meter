@@ -53,9 +53,10 @@ def scan_files_list(input_file, options, out_dir):
     dr = DynamicRangeMeter()
     dr.write_to_local_db(config.db_is_enabled())
 
-    r = dr.scan_mp(files_list=files_list, thread_cnt=get_thread_cnt())
+    cpu = 1 if options.disable_multithread else get_thread_cnt()
+    r = dr.scan_mp(files_list=files_list, thread_cnt=cpu)
 
-    if r == 0:
+    if r < 1:
         success = False
     else:
         write_results(dr, options, out_dir, "")
@@ -90,7 +91,7 @@ def scan_dir_list(subdirlist, options, out_dir):
             tagger = Tagger()
             tagger.write_dr_tags(dr)
 
-        if r == 0:
+        if r < 1:
             continue
         else:
             success = True

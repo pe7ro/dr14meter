@@ -134,7 +134,7 @@ def main():
         subdirlist = [path_name]
 
     if run_analysis_opt(options, path_name):
-        return 1
+        return 0
 
     if options.scan_file:
 
@@ -150,24 +150,20 @@ def main():
             print_out("DR      = %d" % dr.res_list[0]['dr14'])
             print_out("Peak dB = %.2f" % dr.res_list[0]['dB_peak'])
             print_out("Rms dB  = %.2f" % dr.res_list[0]['dB_rms'])
-            return 1
+            return 0
         else:
             print_msg("Error: invalid audio file")
-            return 0
+            return 1
 
-    if options.out_dir == "":
-        out_dir = None
-    else:
-        out_dir = options.out_dir
+    out_dir = options.out_dir if options.out_dir else None
 
-    if options.append and out_dir == None:
+    if options.append and out_dir is None:
         out_dir = path_name
 
     if options.files_list:
-        (success, clock, r) = scan_files_list(
-            options.path_name, options, out_dir)
+        success, clock, r = scan_files_list(options.path_name, options, out_dir)
     else:
-        (success, clock, r) = scan_dir_list(subdirlist, options, out_dir)
+        success, clock, r = scan_dir_list(subdirlist, options, out_dir)
 
     if success:
         print_msg("Success! ")
@@ -179,7 +175,7 @@ def main():
 
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         # todo fix:   stty: 'standard input': Inappropriate ioctl for device
-        subprocess.call("stty sane", shell=True)
+        subprocess.call("stty sane", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     if not success and not database_exists():
         print_msg(" ")
@@ -189,8 +185,10 @@ def main():
         print_msg("  > %s --enable_database " % get_exe_name())
         print_msg(" for more details visit: http://dr14tmeter.sourceforge.net/index.php/DR_Database ")
 
-    return r
+    return 0
 
 
 if __name__ == '__main__':
+    print(__file__)
+
     main()

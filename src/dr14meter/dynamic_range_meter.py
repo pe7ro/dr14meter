@@ -23,7 +23,6 @@ import sys
 import codecs
 
 from dr14meter.compute_dr14 import compute_dr14
-from dr14meter.compute_dr import ComputeDR14
 from dr14meter.audio_track import AudioTrack
 from dr14meter.read_metadata import RetrieveMetadata
 from dr14meter.audio_decoder import AudioDecoder
@@ -31,9 +30,7 @@ from dr14meter.duration import StructDuration
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.audio_math import sha1_track_v1
 from dr14meter.dr14_config import get_collection_dir
-
 from dr14meter.dr14_global import min_dr
-
 from dr14meter.out_messages import print_msg, print_out, flush_msg
 
 
@@ -44,7 +41,6 @@ class DynamicRangeMeter:
         self.dir_name = ''
         self.dr14 = 0
         self.meta_data = RetrieveMetadata()
-        self.compute_dr = ComputeDR14()
         self.__write_to_local_db = False
         self.coll_dir = os.path.realpath(get_collection_dir())
 
@@ -52,60 +48,12 @@ class DynamicRangeMeter:
         self.__write_to_local_db = f
 
     def scan_file(self, file_name):
-
-        at = AudioTrack()
-
-        if at.open(file_name):
-            self.__compute_and_append(at, file_name)
-            return 1
-        else:
-            return 0
-
-    def scan_dir(self, dir_name):
-
-        if not os.path.isdir(dir_name):
-            return 0
-
-        dir_list = sorted(os.listdir(dir_name))
-
-        self.dir_name = dir_name
-        self.dr14 = 0
-
-        at = AudioTrack()
-        for file_name in dir_list:
-            full_file = os.path.join(dir_name, file_name)
-
-            #print_msg( full_file )
-            if at.open(full_file):
-                self.__compute_and_append(at, file_name)
-
-        self.meta_data.scan_dir(dir_name)
-        if len(self.res_list) > 0:
-            self.dr14 = int(round(self.dr14 / len(self.res_list)))
-            return len(self.res_list)
-        else:
-            return 0
-
-    def __compute_and_append(self, at, file_name):
-
-        duration = StructDuration()
-
-        #( dr14, dB_peak, dB_rms ) = self.compute_dr.compute( at.Y , at.Fs )
-        (dr14, dB_peak, dB_rms) = compute_dr14(at.Y, at.Fs, duration)
-        sha1 = sha1_track_v1(at.Y, at.get_file_ext_code())
-
-        self.dr14 = self.dr14 + dr14
-
-        res = {'file_name': file_name,
-               'dr14': dr14,
-               'dB_peak': dB_peak,
-               'dB_rms': dB_rms,
-               'duration': duration.to_str(),
-               'sha1': sha1}
-
-        self.res_list.append(res)
-
-        print_msg(file_name + ": \t DR " + str(int(dr14)))
+        file_name = pathlib.Path(file_name)
+        res = run_mp(file_name)
+        if not res['fail']:
+            self.dr14 = self.dr14 + res['dr14']
+            self.res_list.append(res)
+        return not res['fail']
 
     def write_to_local_database(self):
 
@@ -142,13 +90,14 @@ class DynamicRangeMeter:
         self.dr14 = 0
 
         if not files_list:
-            if not os.path.isdir(dir_name):
-                return 0
-            dir_list = sorted(os.listdir(dir_name))
-            self.dir_name = dir_name
+            dir_name = pathlib.Path(dir_name)
+            if not dir_name.is_dir():
+                return -1
+            dir_list = sorted(dir_name.glob('*'))
+            self.dir_name = str(dir_name)
             files_list = None
         else:
-            dir_list = sorted(files_list)
+            dir_list = sorted(pathlib.Path(x) for x in files_list)
 
         ad = AudioDecoder()
         job_queue = []
@@ -159,16 +108,16 @@ class DynamicRangeMeter:
                 full_file = pathlib.Path(dir_name, file_name)
                 job_queue.append(full_file)
 
-        with concurrent.futures.ProcessPoolExecutor(max_workers=thread_cnt) as executor:
-            results = list(executor.map(run_mp, job_queue))
-
-        if len(results) !=  len(job_queue):
+        if thread_cnt > 1:
             # #6 DR14 Report File Missing Tracks That Appear in Console Output
-            print(f'!!! LOST FILES {len(job_queue)} vs {len(results)}')
-            raise Exception(f'!!! LOST FILES {len(job_queue)} vs {len(results)}')
+            # with concurrent.futures.ProcessPoolExecutor(max_workers=thread_cnt) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=thread_cnt) as executor:
+                results = list(executor.map(run_mp, job_queue))
+        else:
+            results = [run_mp(x) for x in job_queue]
 
         self.res_list = [x for x in results if not x['fail']]
-        self.res_list = sorted(self.res_list, key=lambda res: res['file_name'])
+        # self.res_list = sorted(self.res_list, key=lambda res: res['file_name'])
 
         succ = 0
         for d in self.res_list:
@@ -184,9 +133,10 @@ class DynamicRangeMeter:
         else:
             return 0
 
-def run_mp(full_file: pathlib.Path):
+def run_mp(full_file: pathlib.Path, at=None):
 
-    at = AudioTrack()
+    if not at:
+        at = AudioTrack()
     duration = StructDuration()
 
     if at.open(str(full_file)):
@@ -201,7 +151,7 @@ def run_mp(full_file: pathlib.Path):
             'dr14': dr14,
             'dB_peak': dB_peak,
             'dB_rms': dB_rms,
-            'duration': StructDuration.float_to_str(duration.to_float()),
+            'duration': duration.to_str(),
             'sha1': sha1,
             'fail': False,
         }
