@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dr14meter"
-version = "1.1.5a2"
+version = "1.1.5a3"
 description = "Compute the dynamic range DR14 value of the given audio files"
 keywords = ["dr14", "dynamic range", 'loudness war']
 authors = [
@@ -28,13 +28,15 @@ classifiers = [
 
 dependencies = [
     "numpy",
-    'mutagen',
 ]
 
 [project.optional-dependencies]
 plot = [
     "matplotlib>=2",
     'scipy',
+]
+tagging = [
+    'mutagen',
 ]
 # matplotlib 3.9.3
 # mutagen   1.47.0

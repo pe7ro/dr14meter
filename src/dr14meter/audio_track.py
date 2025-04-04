@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import pathlib
 import numpy
-import os
 from dr14meter.audio_decoder import AudioDecoder
 
 
@@ -39,16 +39,30 @@ class AudioTrack:
     def get_file_ext_code(self):
         return self._ext
 
-    def open(self, file_name):
+    def open(self, file_name: pathlib.Path):
+        file_name = pathlib.Path(file_name)
 
         self.Y = numpy.array([])
         self.Fs = 0
         self.channels = 0
 
-        if not (os.path.exists(file_name)):
+        if not file_name.exists():
             return False
 
         res_f = self._de.read_track_new(file_name, self)
         self._ext = self._de.get_file_ext_code()
 
         return res_f
+
+
+class StructDuration:
+
+    def __init__(self):
+        self.tm_min = 0
+        self.tm_sec = 0
+
+    def set_samples(self, samples, Fs):
+        self.tm_min, self.tm_sec = divmod(int(samples * (1.0 / Fs)), 60)
+
+    def to_str(self):
+        return str(self.tm_min) + ":%02d" % int(self.tm_sec)

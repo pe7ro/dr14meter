@@ -17,30 +17,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dr14meter.duration import StructDuration
-from dr14meter.compute_dr14 import compute_dr14
-from dr14meter.compute_drv import compute_DRV
-
-import numpy
-
-
-class ComputeAudio:
-
-    def __init__(self):
-        self.duration = StructDuration()
-        self.Dr_lr = numpy.zeros(2)
-
-    def compute(self, Y, Fs):
-        pass
-
-
-class ComputeDR14(ComputeAudio):
-
-    def compute(self, Y, Fs):
-        return compute_dr14(Y, Fs, self.duration, self.Dr_lr)
-
-
-class ComputeDRV(ComputeAudio):
-
-    def compute(self, Y, Fs):
-        return compute_DRV(Y, Fs, self.duration, self.Dr_lr)
+# from dr14meter.duration import StructDuration
+# from dr14meter.compute_dr14 import compute_dr14
+# from dr14meter.compute_drv import compute_DRV
+#
+# import numpy
+#
+#
+# class ComputeAudio:
+#
+#     def __init__(self):
+#         self.duration = StructDuration()
+#         self.Dr_lr = numpy.zeros(2)
+#
+#     def compute(self, Y, Fs):
+#         pass
+#
+#
+# class ComputeDR14(ComputeAudio):
+#
+#     def compute(self, Y, Fs):
+#         return compute_dr14(Y, Fs, self.duration, self.Dr_lr)
+#
+#
+# class ComputeDRV(ComputeAudio):
+#
+#     def compute(self, Y, Fs):
+#         return compute_DRV(Y, Fs, self.duration, self.Dr_lr)

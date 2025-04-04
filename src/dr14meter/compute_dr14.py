@@ -27,7 +27,7 @@ import math
 import time
 
 
-def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
+def compute_dr14(Y, Fs, duration=None):
 
     s = Y.shape
 
@@ -100,8 +100,8 @@ def compute_dr14(Y, Fs, duration=None, Dr_lr=None):
     if duration is not None:
         duration.set_samples(s[0], Fs)
 
-    if Dr_lr is not None:
-        Dr_lr = ch_dr14
+    # if Dr_lr is not None:
+    #     Dr_lr = ch_dr14
 
     time_b = time.time()
     dr14_log_info("compute_dr14: Clock: %2.8f" % (time_b - time_a))

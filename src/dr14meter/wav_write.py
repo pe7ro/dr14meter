@@ -25,27 +25,26 @@ def wav_write(filename, Fs, Y):
 
     amplitude = 2.0**16 - 1.0
 
-    wav_file = wave.open(filename, "w")
+    with wave.open(str(filename), "wb") as wav_file:
 
-    s = Y.shape
+        s = Y.shape
 
-    if len(Y.shape) > 1:
-        nchannels = s[1]
-    else:
-        nchannels = 1
+        if len(Y.shape) > 1:
+            nchannels = s[1]
+        else:
+            nchannels = 1
 
-    sampwidth = 2
-    framerate = int(Fs)
+        sampwidth = 2
+        framerate = int(Fs)
 
-    nframes = s[0]
-    comptype = "NONE"
-    compname = "no comp"
+        nframes = s[0]
+        comptype = "NONE"
+        compname = "no comp"
 
-    wav_file.setparams((nchannels, sampwidth, framerate, nframes, comptype, compname))
+        wav_file.setparams((nchannels, sampwidth, framerate, nframes, comptype, compname))
 
-    Y_s = numpy.int16((amplitude / 2.0) * Y)
-    Y_s = Y_s.tostring()
+        Y_s = numpy.int16((amplitude / 2.0) * Y)
+        Y_s = Y_s.tostring()
 
-    wav_file.writeframes(Y_s)
+        wav_file.writeframes(Y_s)
 
-    wav_file.close()

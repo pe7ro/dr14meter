@@ -17,16 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
+import pathlib
 import tempfile
 
-# from dr14meter.compute_dr import *
-from dr14meter.audio_track import AudioTrack
-# from dr14meter.table import *
+from dr14meter.audio_track import AudioTrack, StructDuration
 from dr14meter.compressor import DynCompressor
 from dr14meter.wav_write import wav_write
 from dr14meter.read_metadata import RetrieveMetadata
-from dr14meter.duration import StructDuration
 
 from dr14meter.plot.dr_histogram import compute_hist
 from dr14meter.plot.lev_histogram import compute_lev_hist
@@ -71,18 +68,17 @@ class AudioAnalysis:
         return self.file_name
 
     def virt_compute(self):
-        raise
+        title = self.getMetaData().get_value(self.getFileName().name, "title")
+        print_msg(f"Track Title: {title} ")
+        return title
+
+    # def _virt_compute(self):
 
 
 class AudioDynVivacity(AudioAnalysis):
 
     def virt_compute(self):
-        (foo, fn) = os.path.split(self.getFileName())
-
-        title = self.getMetaData().get_value(fn, "title")
-
-        print_msg("Track Title: %s " % title)
-
+        super().virt_compute()
         at = self.getAudioTrack()
         dynamic_vivacity(at.Y, at.Fs)
 
@@ -90,13 +86,7 @@ class AudioDynVivacity(AudioAnalysis):
 class AudioDrHistogram(AudioAnalysis):
 
     def virt_compute(self):
-
-        (foo, fn) = os.path.split(self.getFileName())
-
-        title = self.getMetaData().get_value(fn, "title")
-
-        print_msg("Track Title: %s " % title)
-
+        title = super().virt_compute()
         at = self.getAudioTrack()
         compute_hist(at.Y, at.Fs, self.getDuration(), title=title)
 
@@ -104,13 +94,7 @@ class AudioDrHistogram(AudioAnalysis):
 class AudioLevelHistogram(AudioAnalysis):
 
     def virt_compute(self):
-
-        (foo, fn) = os.path.split(self.getFileName())
-
-        title = self.getMetaData().get_value(fn, "title")
-
-        print_msg("Track Title: %s " % title)
-
+        title = super().virt_compute()
         at = self.getAudioTrack()
         compute_lev_hist(at.Y, at.Fs, self.getDuration(), title=title)
 
@@ -118,26 +102,15 @@ class AudioLevelHistogram(AudioAnalysis):
 class AudioSpectrogram(AudioAnalysis):
 
     def virt_compute(self):
-
-        (foo, fn) = os.path.split(self.getFileName())
-
-        title = self.getMetaData().get_value(fn, "title")
-
-        print_msg("Track Title: %s " % title)
-
+        super().virt_compute()
         at = self.getAudioTrack()
-
         spectrogram(at.Y, at.Fs)
 
 
 class AudioPlotTrack(AudioAnalysis):
 
     def virt_compute(self):
-
-        (foo, fn) = os.path.split(self.getFileName())
-        title = self.getMetaData().get_value(fn, "title")
-        print_msg("Track Title: %s " % title)
-
+        super().virt_compute()
         at = self.getAudioTrack()
         plot_str = plot_track_classic(at.Y, at.Fs)
         plot_str.start()
@@ -146,11 +119,7 @@ class AudioPlotTrack(AudioAnalysis):
 class AudioPlotTrackDistribution(AudioAnalysis):
 
     def virt_compute(self):
-
-        (foo, fn) = os.path.split(self.getFileName())
-        title = self.getMetaData().get_value(fn, "title")
-        print_msg("Track Title: %s " % title)
-
+        super().virt_compute()
         at = self.getAudioTrack()
         plot_track(at.Y, at.Fs)
 
@@ -161,17 +130,14 @@ class AudioCompressor(AudioAnalysis):
         self.compression_modality = compression_modality
 
     def virt_compute(self):
-        (head, file_n) = os.path.split(self.getFileName())
 
         comp = DynCompressor()
         comp.set_compression_modality(self.compression_modality)
 
-        full_file = os.path.join(
-            tempfile.gettempdir(), "%s%s.wav" % (file_n, "-compressed-"))
+        full_file = pathlib.Path(tempfile.gettempdir(), f'{self.getFileName()}-compressed-.wav' )
 
         at = self.getAudioTrack()
         cY = comp.dyn_compressor(at.Y, at.Fs)
 
         wav_write(full_file, at.Fs, cY)
-        print_msg(
-            "The resulting compressed audiotrack has been written in: %s " % full_file)
+        print_msg(f"The resulting compressed audiotrack has been written in: {full_file}")

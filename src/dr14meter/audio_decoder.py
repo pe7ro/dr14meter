@@ -27,7 +27,7 @@ class AudioDecoder:
         # Attention!!! do not modify the order of this list!!!!
         # It is used for computing the sha1 of the track
         self.formats = ['.flac', '.mp3', '.ogg', '.opus', '.mp4',
-                        '.m4a', '.wav', '.wv', '.ape', '.ac3', '.wma', '.dsf', '.dff']
+                        '.m4a', '.wav', '.wv', '.ape', '.ac3', '.wma', '.dsf', '.dff', '.oga']
 
         self._ext = -1
 
@@ -36,18 +36,13 @@ class AudioDecoder:
 
     def read_track_new(self, file_name, target):
 
-        (f, ext) = os.path.splitext(file_name)
-        ext = ext.lower()
+        ext = file_name.suffix.lower()
 
         if ext not in self.formats:
             return False
 
-        if ext in ['.mp3', '.flac', '.opus', '.mp4', '.m4a', '.ape', '.ac3', '.wma', '.dsf', '.dff',  '.wv',  ]:
+        if ext in ['.mp3', '.flac', '.opus', '.mp4', '.m4a', '.ape', '.ac3', '.wma', '.dsf', '.dff',  '.wv',  '.ogg', '.oga']:
             af = AudioFileReader()
-        # if ext == '.mp3':
-        #     af = Mp3FileReader()
-        elif ext == '.ogg':
-            af = OggFileReader()
         elif ext == '.wav':
             af = WavFileReader()
         else:

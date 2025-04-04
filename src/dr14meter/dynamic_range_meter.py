@@ -23,10 +23,9 @@ import sys
 import codecs
 
 from dr14meter.compute_dr14 import compute_dr14
-from dr14meter.audio_track import AudioTrack
+from dr14meter.audio_track import AudioTrack, StructDuration
 from dr14meter.read_metadata import RetrieveMetadata
 from dr14meter.audio_decoder import AudioDecoder
-from dr14meter.duration import StructDuration
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.audio_math import sha1_track_v1
 from dr14meter.dr14_config import get_collection_dir
@@ -74,16 +73,16 @@ class DynamicRangeMeter:
             return
 
         file_mode = "a" if append else "w"
+        file_name = pathlib.Path(file_name)
 
         try:
-            out_file = codecs.open(file_name, file_mode, "utf-8-sig")
+            with file_name.open(file_mode) as f:  # "utf-8-sig"
+                f.write(self.table_txt)
+            return True
         except:
-            print_msg("File opening error [%s] :" % file_name, sys.exc_info()[0])
+            print_msg(f"File opening error [{file_name}]: {sys.exc_info()[0]}")
             return False
 
-        out_file.write(self.table_txt)
-        out_file.close()
-        return True
 
     def scan_mp(self, dir_name="", thread_cnt=None, files_list=None):
 
@@ -139,7 +138,7 @@ def run_mp(full_file: pathlib.Path, at=None):
         at = AudioTrack()
     duration = StructDuration()
 
-    if at.open(str(full_file)):
+    if at.open(full_file):
         dr14, dB_peak, dB_rms = compute_dr14(at.Y, at.Fs, duration)
         sha1 = sha1_track_v1(at.Y, at.get_file_ext_code())
 

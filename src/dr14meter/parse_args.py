@@ -38,6 +38,11 @@ def parse_args():
                         dest="recursive",
                         help="Scan recursively the subdirectories")
 
+    parser.add_argument("--skip",
+                        action="store_true",
+                        dest="skip",
+                        help="Skip folders that already contain a dr14*.txt file; disabled if -a, -n, -o, or similar is set")
+
     parser.add_argument("-a", "--append",
                         action="store_true",
                         dest="append",
@@ -62,7 +67,7 @@ def parse_args():
                         action="store",
                         dest="out_dir",
                         type=str,
-                        help="Write the resultings files into the given directory")
+                        help="Write the report files into the given directory")
 
     parser.add_argument("-t", "--tables",
                         action="store",
@@ -145,7 +150,7 @@ def parse_args():
     parser.add_argument("--files_list",
                         action='store_true',
                         dest="files_list",
-                        help="takes a files list and compute the DR of each file, if no files are specified, it reads from STDIN")
+                        help="Reads a list of files and computes the DR of each file; if no files are specified, it reads from STDIN")
 
     parser.add_argument("--quiet",
                         action="store_true",

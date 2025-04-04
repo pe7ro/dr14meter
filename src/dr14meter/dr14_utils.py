@@ -24,11 +24,9 @@ import os
 import tempfile
 import fileinput
 import time
-import sys
 
-from dr14meter import dr14_global
+
 from dr14meter import dr14_config as config
-from dr14meter import audio_analysis as aa
 from dr14meter.dynamic_range_meter import DynamicRangeMeter #,
 from dr14meter.table import TextTable, BBcodeTable, HtmlTable, MediaWikiTable
 from dr14meter.out_messages import print_msg
@@ -38,7 +36,7 @@ def scan_files_list(input_file, options, out_dir):
     if out_dir is None:
         out_dir = tempfile.gettempdir()
     else:
-        out_dir = os.path.abspath(out_dir)
+        out_dir = str(out_dir)
 
     a = time.time()
 
@@ -59,13 +57,13 @@ def scan_files_list(input_file, options, out_dir):
     if r < 1:
         success = False
     else:
+        success = True
         write_results(dr, options, out_dir, "")
 
     if options.tag:
         tagger = Tagger()
         tagger.write_dr_tags(dr)
 
-        success = True
 
     clock = time.time() - a
     return success, clock, r
@@ -78,11 +76,16 @@ def scan_dir_list(subdirlist, options, out_dir):
     r = 0
 
     for cur_dir in subdirlist:
+        print_msg("\n------------------------------------------------------------ ")
+        if options.skip:
+            x = list(cur_dir.glob('dr14*.txt'))
+            if len(x) > 0:
+                print_msg(f'# Skipping "{cur_dir}", because {[a.name for a in x]} found.')
+                continue
         dr = DynamicRangeMeter()
         dr.write_to_local_db(config.db_is_enabled())
 
-        print_msg("\n------------------------------------------------------------ ")
-        print_msg("> Scan Dir: %s \n" % cur_dir)
+        print_msg(f"> Scan Dir: {cur_dir} \n")
 
         cpu = 1 if options.disable_multithread else get_thread_cnt()
         r = dr.scan_mp(cur_dir, cpu)
@@ -109,21 +112,6 @@ def get_thread_cnt():
     return cpu
 
 
-def list_rec_dirs(basedir, subdirlist=None):
-    if subdirlist is None:
-        subdirlist = [basedir]
-
-    for item in os.listdir(basedir):
-        item = os.path.join(basedir, item)
-        if os.path.isdir(item):
-            item = os.path.abspath(item)
-            # print_msg( item )
-            subdirlist.append(item)
-            list_rec_dirs(item, subdirlist)
-
-    return subdirlist
-
-
 def write_results(dr, options, out_dir, cur_dir):
     table_format = not options.basic_table
 
@@ -140,7 +128,7 @@ def write_results(dr, options, out_dir, cur_dir):
         print_msg("--------------------------------------------------------------- ")
 
     if options.print_std_out:
-        dr.fwrite_dr("", TextTable(), table_format, True)
+        dr.fwrite_dr("", TextTable(), table_format, std_out=True)
 
     if options.turn_off_out:
         return
@@ -183,71 +171,3 @@ def test_path_validity(path):
         return test_path_validity(h)
 
 
-def run_analysis_opt(options, path_name):
-    flag = False
-
-    if options.compress:
-        if not dr14_global.test_compress_modules():
-            sys.exit(1)
-
-        print_msg("Start compressor:")
-        comp = aa.AudioCompressor()
-        comp.setCompressionModality(options.compress)
-        comp.compute_track(path_name)
-        flag = True
-
-    if options.spectrogram:
-        if not dr14_global.test_matplotlib_modules("Spectrogram"):
-            sys.exit(1)
-
-        print_msg("Start spectrogram:")
-        spectr = aa.AudioSpectrogram()
-        spectr.compute_track(path_name)
-        flag = True
-
-    if options.plot_track:
-        if not dr14_global.test_matplotlib_modules("Plot track"):
-            sys.exit(1)
-
-        print_msg("Start Plot Track:")
-        spectr = aa.AudioPlotTrack()
-        spectr.compute_track(path_name)
-        flag = True
-
-    if options.plot_track_dst:
-        if not dr14_global.test_matplotlib_modules("Plot track dst"):
-            sys.exit(1)
-
-        print_msg("Start Plot Track:")
-        spectr = aa.AudioPlotTrackDistribution()
-        spectr.compute_track(path_name)
-        flag = True
-
-    if options.histogram:
-        if not dr14_global.test_hist_modules():
-            sys.exit(1)
-
-        print_msg("Start histogram:")
-        hist = aa.AudioDrHistogram()
-        hist.compute_track(path_name)
-        flag = True
-
-    if options.lev_histogram:
-        if not dr14_global.test_hist_modules():
-            sys.exit(1)
-
-        print_msg("Start level histogram:")
-        hist = aa.AudioLevelHistogram()
-        hist.compute_track(path_name)
-        flag = True
-
-    if options.dynamic_vivacity:
-        if not dr14_global.test_hist_modules():
-            sys.exit(1)
-
-        print_msg("Start Dynamic vivacity:")
-        viva = aa.AudioDynVivacity()
-        viva.compute_track(path_name)
-        flag = True
-
-    return flag

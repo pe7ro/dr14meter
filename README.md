@@ -1,4 +1,4 @@
-dr14meter is a free and open-source command line tool for computing the Dynamic Range of your music. 
+dr14meter is a command-line tool for computing the dynamic range of your music, following the procedure described by the Pleasurize Music Foundation. 
 
 It is based on [simon-r/dr14_t.meter](https://github.com/simon-r/dr14_t.meter) which has not been updated for a while now.
 The goal is to provide bugfixes and occasional updates to the tool.

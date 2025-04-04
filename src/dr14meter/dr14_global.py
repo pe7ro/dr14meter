@@ -33,7 +33,7 @@ def dr14_version():
     try:
         return importlib.metadata.version('dr14meter')
     except ModuleNotFoundError:
-        print_msg("The %s function require the installation of MatPlotLib")
+        print_msg("Unable to get the version of the app")
     return 'UNDEF'
 
 
