@@ -27,9 +27,10 @@
 
 import sqlite3
 import threading
+import os
 
 from dr14meter.dr14_config import get_db_path
-from dr14meter.out_messages import *
+from dr14meter.out_messages import print_out
 
 
 unique_db_object = 0

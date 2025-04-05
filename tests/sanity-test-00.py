@@ -17,6 +17,10 @@ sys.argv = [__file__, 'data']
 run()
 
 
+sys.argv = [__file__, 'data', '--quiet']
+run()
+
+
 sys.argv = [__file__, '--skip', 'data']
 run()
 

@@ -20,9 +20,10 @@
 import numpy
 import time
 
-from dr14meter.audio_math import *
-from dr14meter.out_messages import *
+from dr14meter.audio_math import normalize
+from dr14meter.out_messages import dr14_log_info
 
+# todo check
 try:
     from scipy.interpolate import interp1d
 except:

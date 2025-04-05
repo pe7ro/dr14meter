@@ -31,9 +31,10 @@ from dr14meter.audio_file_reader import *
 
 class Tagger:
 
+    FORMATS = ['.flac', '.mp3', '.ogg', '.opus', '.mp4', '.m4a', '.wav', '.ape', '.ac3', '.wma']
+
     def __init__(self):
-        self.formats = ['.flac', '.mp3', '.ogg', '.opus', '.mp4',
-                        '.m4a', '.wav', '.ape', '.ac3', '.wma']
+        # fixme can it lead to '/filename' as a path in update_track_tags ?
         self.dir_name = ''
         self._ext = -1
     
@@ -45,25 +46,24 @@ class Tagger:
         self.dir_name = dr.dir_name
         
         for item in dr.res_list:
-            self.read_track_new(item)
+            self.update_track_tags(item)
 
     def get_file_ext_code(self):
         return self._ext
 
-    def read_track_new(self, item):
+    def update_track_tags(self, item):
 
         (f, ext) = os.path.splitext(item['file_name'])
         ext = ext.lower()
 
-        if ext not in self.formats:
+        if ext not in Tagger.FORMATS:
             return False
 
-        audio = None
         filename = self.dir_name + os.sep + item['file_name']
 
         if ext == '.mp3':
             audio = MP3(filename)
-            audio.add_tags
+            # audio.add_tags
         elif ext == '.flac':
             audio = FLAC(filename)
         elif ext == '.ogg':
@@ -72,16 +72,11 @@ class Tagger:
             audio = OggOpus(filename)
         elif ext in ['.mp4', '.m4a']:
             audio = MP4(filename)
-        elif ext == '.wav':
-            raise Exception("Tagging .wav files not supported")
         elif ext == '.ape':
             audio = MonkeysAudio(filename)
-        elif ext == '.ac3':
-            raise Exception("Tagging .ac3 files not supported")
-        elif ext == '.wma':
-            raise Exception("Tagging .wma files not supported")
         else:
-            return False
+            # wma ac3 wav
+            raise Exception(f"Tagging {ext} files not supported")
 
         if isinstance(audio, MP3):
             audio.tags.add(TXXX(encoding=3, desc=u"DR", text=[str(item["dr14"])]))
@@ -89,7 +84,5 @@ class Tagger:
             audio["DR"] = [str(item["dr14"])]
         
         audio.save()
-        
-        self._ext = self.formats.index(ext)
-
+        self._ext = Tagger.FORMATS.index(ext)
         return True

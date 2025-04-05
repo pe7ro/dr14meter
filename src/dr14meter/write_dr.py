@@ -189,22 +189,19 @@ class WriteDrExtended(WriteDr):
             self.set_loudness_war_db_compatible(False)
 
         if self.get_loudness_war_db_compatible():
-
-            if album_t == None:
+            if album_t is None:
                 title = " Analyzed folder:  " + album_dir
             else:
                 title = " Analyzed: " + album_t
-                if artist != None:
+                if artist is not None:
                     title = title + " /  Artist: " + artist
             tm.add_title(title)
-
         else:
-
-            if album_t == None:
+            if album_t is None:
                 tm.add_title(" Analyzed folder:  " + album_dir)
             else:
                 tm.add_title(" Album: " + album_t)
-                if artist != None:
+                if artist is not None:
                     tm.add_title(" Artist: " + artist)
 
         tm.end_head()

@@ -91,7 +91,7 @@ def set_config_field(section, field, value):
     config = ConfigParser.ConfigParser()
     config.read(cfg_file)
     config.set(section, field, value)
-    with open(cfg_file, 'w') as configfile:
+    with open(cfg_file, 'wt') as configfile:
         config.write(configfile)
 
 

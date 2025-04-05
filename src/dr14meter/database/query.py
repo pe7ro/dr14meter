@@ -54,8 +54,7 @@ class query:
     limit = property(get_limit, set_limit)
 
     def get_query(self):
-        NotImplementedError(
-            "%s : is virtual and must be overridden." % sys._getframe().f_code.co_name)
+        NotImplementedError(f"{sys._getframe().f_code.co_name} : is virtual and must be overridden.")
 
     def exec_query(self):
         db = dr_database_singletone().get()

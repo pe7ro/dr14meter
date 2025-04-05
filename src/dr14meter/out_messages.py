@@ -30,18 +30,16 @@ mode = "verbose"
 logger = logging.getLogger('dr14log')
 
 
-def init_log(lev=logging.DEBUG):
+def init_log(level=logging.DEBUG):
     global logger
 
     logger = logging.getLogger('dr14log')
-    logger.setLevel(logging.DEBUG)
+
     stream_h = logging.StreamHandler()
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    stream_h.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    stream_h.setLevel(level)
 
-    stream_h.setLevel(lev)
-    stream_h.setFormatter(formatter)
-
+    logger.setLevel(logging.DEBUG)
     logger.addHandler(stream_h)
 
 
@@ -59,28 +57,31 @@ def dr14_log_info(message):
 
 def print_msg(string):
     global message_file
-    message_file.write("%s\n" % string)
+    message_file.write(f"{string}\n")
 
 
 def flush_msg():
+    global message_file
     message_file.flush()
 
 
 def print_err(string):
     global err_file
-    err_file.write("Error: %s \n" % string)
+    err_file.write(f"Error: {string} \n")
 
 
 def flush_err():
+    global message_file
     err_file.flush()
 
 
 def print_out(string):
     global out_file
-    out_file.write("%s\n" % string)
+    out_file.write(f"{string}\n")
 
 
 def flush_out():
+    global message_file
     out_file.flush()
 
 
@@ -103,4 +104,4 @@ def set_quiet_msg():
     if mode == "quiet":
         return
 
-    message_file = codecs.open(os.devnull, "w",  encoding="utf-8")
+    message_file = open(os.devnull, "w")

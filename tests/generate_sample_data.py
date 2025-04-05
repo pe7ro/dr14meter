@@ -14,7 +14,7 @@ files_out.parent.mkdir(exist_ok=True)
 np.random.seed(0)
 
 sample_rate = 44100
-duration = 15  # seconds
+duration = 25  # seconds
 
 t = np.linspace(0, duration, int(sample_rate * duration), False)
 

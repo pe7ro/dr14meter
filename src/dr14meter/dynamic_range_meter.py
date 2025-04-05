@@ -25,7 +25,6 @@ import codecs
 from dr14meter.compute_dr14 import compute_dr14
 from dr14meter.audio_track import AudioTrack, StructDuration
 from dr14meter.read_metadata import RetrieveMetadata
-from dr14meter.audio_decoder import AudioDecoder
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.audio_math import sha1_track_v1
 from dr14meter.dr14_config import get_collection_dir
@@ -84,7 +83,7 @@ class DynamicRangeMeter:
             return False
 
 
-    def scan_mp(self, dir_name="", thread_cnt=None, files_list=None):
+    def scan_mp(self, dir_name=None, thread_cnt=None, files_list=None):
 
         self.dr14 = 0
 
@@ -92,20 +91,12 @@ class DynamicRangeMeter:
             dir_name = pathlib.Path(dir_name)
             if not dir_name.is_dir():
                 return -1
-            dir_list = sorted(dir_name.glob('*'))
+            files_list = sorted(dir_name.glob('*'))
             self.dir_name = str(dir_name)
-            files_list = None
         else:
-            dir_list = sorted(pathlib.Path(x) for x in files_list)
+            files_list = sorted(pathlib.Path(x) for x in files_list)
 
-        ad = AudioDecoder()
-        job_queue = []
-
-        for file_name in dir_list:
-            (fn, ext) = os.path.splitext(file_name)
-            if ext in ad.formats:
-                full_file = pathlib.Path(dir_name, file_name)
-                job_queue.append(full_file)
+        job_queue = [x for x in files_list if x.suffix in AudioTrack.FORMATS]
 
         if thread_cnt > 1:
             # #6 DR14 Report File Missing Tracks That Appear in Console Output
@@ -124,7 +115,7 @@ class DynamicRangeMeter:
                 self.dr14 = self.dr14 + d['dr14']
                 succ = succ + 1
 
-        self.meta_data.scan_dir(dir_name, files_list)
+        self.meta_data.scan_dir_metadata(job_queue)
 
         if len(self.res_list) > 0 and succ > 0:
             self.dr14 = int(round(self.dr14 / succ))

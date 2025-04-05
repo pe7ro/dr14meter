@@ -19,10 +19,13 @@
 
 import pathlib
 import tempfile
+import wave
+from abc import abstractmethod
+
+import numpy
 
 from dr14meter.audio_track import AudioTrack, StructDuration
 from dr14meter.compressor import DynCompressor
-from dr14meter.wav_write import wav_write
 from dr14meter.read_metadata import RetrieveMetadata
 
 from dr14meter.plot.dr_histogram import compute_hist
@@ -37,16 +40,16 @@ from dr14meter.out_messages import print_msg
 
 class AudioAnalysis:
 
-    def compute_track(self, file_name):
+    def compute_track(self, file_path: pathlib.Path):
         self.at = AudioTrack()
 
-        if not self.at.open(file_name):
+        if not self.at.open(file_path):
             return False
 
-        self.file_name = file_name
+        self.file_name = file_path
 
         self.meta_data = RetrieveMetadata()
-        self.meta_data.scan_file(self.file_name)
+        self.meta_data.scan_file_orig(self.file_name)
 
         self.duration = StructDuration()
         self.duration.set_samples(self.at.Y.shape[0], self.at.Fs)
@@ -67,6 +70,7 @@ class AudioAnalysis:
     def getFileName(self):
         return self.file_name
 
+    @abstractmethod
     def virt_compute(self):
         title = self.getMetaData().get_value(self.getFileName().name, "title")
         print_msg(f"Track Title: {title} ")
@@ -141,3 +145,22 @@ class AudioCompressor(AudioAnalysis):
 
         wav_write(full_file, at.Fs, cY)
         print_msg(f"The resulting compressed audiotrack has been written in: {full_file}")
+
+
+def wav_write(file_path, Fs, Y):
+    s = Y.shape
+    nchannels = s[1] if len(s) > 1 else 1
+    sampwidth = 2
+    framerate = int(Fs)
+    nframes = s[0]
+    comptype = "NONE"
+    compname = "no comp"
+
+    with wave.open(str(file_path), "wb") as wav_file:
+        wav_file.setparams((nchannels, sampwidth, framerate, nframes, comptype, compname))
+
+        amplitude = 2.0 ** 16 - 1.0
+        Y_s = numpy.int16((amplitude / 2.0) * Y)
+        Y_s = Y_s.tostring()
+
+        wav_file.writeframes(Y_s)

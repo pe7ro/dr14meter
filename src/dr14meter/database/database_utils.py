@@ -22,12 +22,11 @@ import os
 
 from dr14meter.table import *  # ExtendedTextTable
 from dr14meter.audio_analysis import *
-# from dr14meter.dr14_global import *
 import dr14meter.dr14_global as dr14
 from dr14meter.dr14_config import *  # get_db_path, enable_db, database_exists
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.out_messages import *  # print_out, print_err
-# from dr14meter.dr14_utils import *  # test_path_validity
+from dr14meter.dr14_utils import test_path_validity
 
 from dr14meter.database.database import dr_database_singletone
 from dr14meter.database.query import *
@@ -68,23 +67,18 @@ def local_dr_database_configure():
         if test_path_validity(db_path):
             flag = False
         else:
-            print_out(
-                "  - [ %s ] is not a directory, please insert an acceptable directory name" % db_path)
+            print_out(f"  - [ {db_path} ] is not a directory, please insert an acceptable directory name")
 
     print_out("  ")
-    print_out(
-        "---------------------------------------------------------------------------------------------- ")
+    print_out("---------------------------------------------------------------------------------------------- ")
     print_out("  ")
-    print_out(
-        "     If you set a collection directory ONLY the tracks inside this base folder and sub-folders ")
+    print_out("     If you set a collection directory ONLY the tracks inside this base folder and sub-folders ")
     print_out("     will be added to the database.")
-    print_out(
-        "     If you insert \'any\' all analyzed tracks will be added to the database ")
+    print_out("     If you insert \'any\' all analyzed tracks will be added to the database ")
 
     flag = True
     while flag:
-        print_out(
-            "  2. Insert your collection directory: Default [%s] " % "any")
+        print_out("  2. Insert your collection directory: Default [%s] " % "any")
 
         coll_path = input("     > ")
 
@@ -101,11 +95,10 @@ def local_dr_database_configure():
         if os.path.isdir(coll_path):
             flag = False
         else:
-            print_out(
-                "  - [ %s ] is not a directory, please insert an existing directory name" % coll_path)
+            print_out(f"  - [ {coll_path} ] is not a directory, please insert an existing directory name")
 
     print_out("  ")
-    print_out(" type: %s -q " % dr14.get_exe_name())
+    print_out(f" type: {dr14.get_exe_name()} -q ")
     print_out(" For more details and querying the database ")
     print_out("---------------------------------------------------------------------------------------------- ")
 
@@ -130,8 +123,7 @@ def fix_problematic_database():
             dest_file = dbp + ".d_save"
             os.rename(dbp, dest_file)
             print_out("  ")
-            print_out(
-                " The old database has been saved in the file: %s " % dest_file)
+            print_out(" The old database has been saved in the file: %s " % dest_file)
             print_out("  ")
 
         enable_database(prompt=False)
@@ -187,8 +179,7 @@ def enable_database(prompt=True):
 
     if f:
         enable_db(True)
-        print_msg(
-            "The local DR database is ready and enabled! It is located in the file: %s  " % get_db_path())
+        print_msg(f"The local DR database is ready and enabled! It is located in the file: {get_db_path()}  ")
     else:
         print_err("The building procedure of the database has failed ... retry ")
     return
@@ -208,8 +199,7 @@ def input_number(p=" > ", rng=(0, 2**31)):
             continue
 
         if rng is not None and not (nr >= rng[0] and nr <= rng[1]):
-            print_out(" !! Please insert a valid option number in the [%d .. %d]" % (
-                min(rng), max(rng)))
+            print_out(f" !! Please insert a valid option number in the [{min(rng)} .. {max(rng)}]")
             continue
 
         flag = False
@@ -296,12 +286,10 @@ def query_helper():
     for e in ext_opt:
         options.query.append(e)
 
-    eq_cmd = "%s -q " % get_exe_name()
-    for o in options.query:
-        eq_cmd += "%s " % o
+    eq_cmd = [dr14.get_exe_name(), '-q'] + [str(o) for o in options.query]
 
     print_out("")
-    print_out("equivalent command line:\n>    %s " % eq_cmd)
+    print_out(f"equivalent command line:\n>    {' '.join(eq_cmd)} ")
     print_out("")
 
     res = database_exec_query(options, tm=ExtendedTextTable())

@@ -106,4 +106,4 @@ def compute_dr14(Y, Fs, duration=None):
     time_b = time.time()
     dr14_log_info("compute_dr14: Clock: %2.8f" % (time_b - time_a))
 
-    return (dr14, db_peak, db_rms)
+    return dr14, db_peak, db_rms
