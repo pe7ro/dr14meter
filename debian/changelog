@@ -1,3 +1,9 @@
+dr14meter (1.1.0-1) stable; urgency=medium
+
+  * News: fixed hist not working
+
+ --  Your_Name <Your.email@example.com>  Wed, 4 Dec 2024 22:18:00 +0100
+
 dr14tmeter (1.0.15-1) stable; urgency=medium
 
   * News: Added support for avconv, added ac3 support

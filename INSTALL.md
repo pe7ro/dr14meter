@@ -2,7 +2,7 @@
 
 See: [https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-requirements]()
 
-```commandline
+```bash
 # create virtual environment (reusing installed packages)
 python3 -m venv --system-site-packages venv
 # or create clean environment:
@@ -19,25 +19,25 @@ Use `pipx`.
 
 # pipx / pip
 
-```commandline
+```bash
 pipx install dr14meter
 # or 
 pipx install --system-site-packages dr14meter
 ```
 
 Installing from a wheel file:
-```commandline
+```bash
 pipx install dist/dr14meter-1.1.0a0-py3-none-any.whl
 ```
 
 Uninstall:
-```commandline
+```bash
 pipx uninstall dr14meter
 ```
 
 # Distribution (uploading to pypi)
 
-```commandline
+```bash
 venv/bin/python3 -m pip install --upgrade build
 venv/bin/python3 -m build
 venv/bin/python3 -m pip install --upgrade twine

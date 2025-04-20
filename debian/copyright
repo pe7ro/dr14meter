@@ -1,8 +1,9 @@
 Format: http://dep.debian.net/deps/dep5
-Upstream-Name: dr14tmeter
-Source: <http://simon-r.github.com/dr14_t.meter>
+Upstream-Name: dr14meter
+Source: <https://github.com/pe7ro/dr14meter>
 
 Files: *
+Copyright: 2025 pe7ro <https://github.com/pe7ro>
 Copyright: 2011 Simone Riva <simone.rva@gmail.com>
 License: GPL-3.0+
 
