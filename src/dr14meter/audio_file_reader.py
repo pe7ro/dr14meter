@@ -108,7 +108,7 @@ class AudioFileReader:
 
                 X = wave_read.readframes(wave_read.getnframes())
                 sample_type = f"int{target.sample_width * 8}"
-                target.Y = numpy.fromstring(X, dtype=sample_type).reshape(nframes, target.channels)
+                target.Y = numpy.frombuffer(X, dtype=sample_type).reshape(nframes, target.channels)
 
             if sample_type == 'int16':
                 convert_16_bit = numpy.float32(2 ** 15 + 1)
