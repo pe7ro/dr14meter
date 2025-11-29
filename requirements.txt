@@ -1,7 +1,10 @@
 
+# reading files
 numpy
 
+# plots etc.
 matplotlib>=2
 scipy
 
+# tagging files
 mutagen

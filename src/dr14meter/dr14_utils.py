@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from dr14meter.tagger import Tagger
 import multiprocessing
 import os
 import tempfile
@@ -61,6 +60,7 @@ def scan_files_list(input_file, options, out_dir):
         write_results(dr, options, out_dir, "")
 
     if options.tag:
+        from dr14meter.tagger import Tagger
         tagger = Tagger()
         tagger.write_dr_tags(dr)
 
@@ -91,6 +91,7 @@ def scan_dir_list(subdirlist, options, out_dir):
         r = dr.scan_mp(cur_dir, cpu)
 
         if options.tag:
+            from dr14meter.tagger import Tagger
             tagger = Tagger()
             tagger.write_dr_tags(dr)
 
