@@ -20,7 +20,6 @@ import concurrent.futures
 import os
 import pathlib
 import sys
-import codecs
 
 from dr14meter.compute_dr14 import compute_dr14
 from dr14meter.audio_track import AudioTrack, StructDuration
@@ -105,6 +104,10 @@ class DynamicRangeMeter:
                 results = list(executor.map(run_mp, job_queue))
         else:
             results = [run_mp(x) for x in job_queue]
+
+        # #6 DR14 Report File Missing Tracks That Appear in Console Output
+        if len(results) != len(job_queue):
+            print_msg(f'Some results were lost: {len(results)} != {len(job_queue)}')
 
         self.res_list = [x for x in results if not x['fail']]
         # self.res_list = sorted(self.res_list, key=lambda res: res['file_name'])

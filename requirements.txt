@@ -1,0 +1,7 @@
+
+numpy
+
+matplotlib>=2
+scipy
+
+mutagen

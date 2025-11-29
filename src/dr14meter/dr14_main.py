@@ -20,17 +20,13 @@ import pathlib
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import subprocess
 import sys
 import logging
 import numpy
 
-# import dr14meter as dr
-
 from dr14meter.parse_args import parse_args
 from dr14meter.dynamic_range_meter import DynamicRangeMeter
-# from dr14meter.table import *
 from dr14meter.dr14_global import get_exe_name, dr14_version
 from dr14meter.dr14_utils import  scan_dir_list, scan_files_list
 from dr14meter.out_messages import print_err, print_msg, print_out, set_quiet_msg, init_log
@@ -246,7 +242,7 @@ def main():
 
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         # todo fix:   stty: 'standard input': Inappropriate ioctl for device
-        subprocess.call("stty sane", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run(["stty", "sane"], shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     if not success and not database_exists():
         print_msg(" ")

@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import pathlib
+
 import dr14meter.dr14_global as dr14
 import dr14meter.table as table
 
@@ -41,8 +43,8 @@ class WriteDr:
 
         album_title = drm.meta_data.get_album_title()
 
-        if album_title == None:
-            (head, album_title) = os.path.split(drm.dir_name)
+        if album_title is None:
+            album_title = pathlib.Path(drm.dir_name).name
 
         album_sha1 = drm.meta_data.get_album_sha1()
         album_artist = drm.meta_data.get_album_artist()
@@ -122,14 +124,15 @@ class WriteDr:
 
     def write_dr(self, drm, tm):
 
-        (head, album_dir) = os.path.split(drm.dir_name)
+        album_dir = pathlib.Path(drm.dir_name)
+        # (head, album_dir) = os.path.split(drm.dir_name)
 
         tm.new_table()
 
         tm.new_head()
 
         tm.append_separator_line()
-        tm.add_title(" Analyzed folder:  " + album_dir)
+        tm.add_title(" Analyzed folder:  " + album_dir.name)
 
         tm.end_head()
 
@@ -175,7 +178,7 @@ class WriteDrExtended(WriteDr):
 
     def write_dr(self, drm, tm):
 
-        (head, album_dir) = os.path.split(drm.dir_name)
+        album_dir = pathlib.Path(drm.dir_name)
 
         tm.new_table()
 
@@ -190,7 +193,7 @@ class WriteDrExtended(WriteDr):
 
         if self.get_loudness_war_db_compatible():
             if album_t is None:
-                title = " Analyzed folder:  " + album_dir
+                title = " Analyzed folder:  " + album_dir.name
             else:
                 title = " Analyzed: " + album_t
                 if artist is not None:
@@ -198,7 +201,7 @@ class WriteDrExtended(WriteDr):
             tm.add_title(title)
         else:
             if album_t is None:
-                tm.add_title(" Analyzed folder:  " + album_dir)
+                tm.add_title(" Analyzed folder:  " + album_dir.name)
             else:
                 tm.add_title(" Album: " + album_t)
                 if artist is not None:
@@ -217,8 +220,6 @@ class WriteDrExtended(WriteDr):
 
         sum_kbs = 0
         cnt = 0
-
-        d_nr = 0
 
         for i, element in enumerate(drm.res_list):
 
