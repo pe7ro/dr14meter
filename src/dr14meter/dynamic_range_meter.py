@@ -26,6 +26,7 @@ from dr14meter.audio_track import AudioTrack, StructDuration
 from dr14meter.read_metadata import RetrieveMetadata
 from dr14meter.write_dr import WriteDr, WriteDrExtended
 from dr14meter.audio_math import sha1_track_v1
+from dr14meter.cue_sheet import CueSheet, CueParseError
 from dr14meter.dr14_config import get_collection_dir
 from dr14meter.dr14_global import min_dr
 from dr14meter.out_messages import print_msg, print_out, flush_msg
@@ -90,6 +91,13 @@ class DynamicRangeMeter:
             dir_name = pathlib.Path(dir_name)
             if not dir_name.is_dir():
                 return -1
+
+            cue_files = sorted(p for p in dir_name.glob('*') if p.suffix.lower() == '.cue')
+            audio_files = sorted(p for p in dir_name.glob('*') if p.suffix in AudioTrack.FORMATS)
+
+            if len(cue_files) == 1 and len(audio_files) == 1:
+                return self.scan_cue(dir_name, cue_files[0], audio_files[0], thread_cnt)
+
             files_list = sorted(dir_name.glob('*'))
             self.dir_name = str(dir_name)
         else:
@@ -126,6 +134,60 @@ class DynamicRangeMeter:
         else:
             return 0
 
+    def scan_cue(self, dir_name, cue_path: pathlib.Path, audio_path: pathlib.Path, thread_cnt=None):
+        """Split a single audio file into tracks according to a cue sheet and
+        compute the DR of each track, instead of scanning one file per track."""
+
+        self.dr14 = 0
+        self.dir_name = str(dir_name)
+
+        try:
+            cue = CueSheet(cue_path)
+        except CueParseError as e:
+            print_msg(f"- fail - invalid cue sheet [{cue_path.name}]: {e}")
+            return 0
+
+        jobs = []
+        for tr, start, end in cue.track_ranges():
+            virtual_name = f"{tr['track_nr']:02d} - {tr['title'] or audio_path.stem}"
+            jobs.append((audio_path, start, end, virtual_name))
+
+        print_msg(f"> Scan Cue: {cue_path.name}  ({audio_path.name}, {len(jobs)} tracks) \n")
+
+        if thread_cnt and thread_cnt > 1:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=thread_cnt) as executor:
+                results = list(executor.map(run_mp_cue, jobs))
+        else:
+            results = [run_mp_cue(j) for j in jobs]
+
+        # tracks finish in whatever order their thread completes; print them
+        # back out in track order, aligned to this album's longest title
+        name_width = max((len(x['file_name']) for x in results if not x['fail']), default=0)
+        for x in results:
+            if x['fail']:
+                print_msg(f"- fail - {x['file_name']}")
+            else:
+                print_msg(f"{x['file_name']:<{name_width}s}   DR {int(x['dr14'])}")
+        flush_msg()
+
+        self.res_list = [x for x in results if not x['fail']]
+
+        succ = 0
+        for d in self.res_list:
+            if d['dr14'] > min_dr():
+                self.dr14 = self.dr14 + d['dr14']
+                succ = succ + 1
+
+        durations_sec = {x['file_name']: x.get('duration_sec') for x in self.res_list}
+        self.meta_data.scan_cue_metadata(cue, audio_path, [j[3] for j in jobs], durations_sec)
+
+        if len(self.res_list) > 0 and succ > 0:
+            self.dr14 = int(round(self.dr14 / succ))
+            return succ
+        else:
+            return 0
+
+
 def run_mp(full_file: pathlib.Path, at=None):
 
     if not at:
@@ -152,6 +214,35 @@ def run_mp(full_file: pathlib.Path, at=None):
         print_msg(f"- fail - {full_file}")
         return {
             'file_name': full_file.name,
+            'fail': True,
+        }
+
+
+def run_mp_cue(job):
+    full_file, start, end, virtual_name = job
+
+    at = AudioTrack()
+    duration = StructDuration()
+
+    if at.open(full_file, start=start, end=end):
+        dr14, dB_peak, dB_rms = compute_dr14(at.Y, at.Fs, duration)
+        sha1 = sha1_track_v1(at.Y, at.get_file_ext_code())
+
+        # printed by the caller, once all tracks are back, so the console
+        # output can stay in track order instead of thread-completion order
+        return {
+            'file_name': virtual_name,
+            'dr14': dr14,
+            'dB_peak': dB_peak,
+            'dB_rms': dB_rms,
+            'duration': duration.to_str(),
+            'duration_sec': at.time(),
+            'sha1': sha1,
+            'fail': False,
+        }
+    else:
+        return {
+            'file_name': f"{virtual_name} [{full_file.name} {start}-{end}]",
             'fail': True,
         }
 
