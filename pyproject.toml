@@ -54,3 +54,7 @@ dr14meter = "dr14meter.dr14_main:main"
 #[tool.setuptools]
 #packages = ["dr14tmeter"]
 #scripts = ["dr14tmeter"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

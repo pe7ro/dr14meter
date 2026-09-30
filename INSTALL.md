@@ -35,6 +35,16 @@ Uninstall:
 pipx uninstall dr14meter
 ```
 
+# Tests
+
+```bash
+venv/bin/python3 -m pip install -e . pytest
+venv/bin/python3 -m pytest
+```
+
+Tests that decode FLAC need `ffmpeg` and `ffprobe` in PATH; the plotting tests need
+`matplotlib` (and `scipy` for `--compress`). Missing tools skip those tests.
+
 # Distribution (uploading to pypi)
 
 ```bash

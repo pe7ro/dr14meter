@@ -5,6 +5,7 @@ Notable changes in each release. Versions up to 1.0.16 were released as
 
 ## Unreleased
 
+- Added automated tests (`python -m pytest`, see `INSTALL.md`).
 - Fixed `--compress` crashing with numpy 2 (`ndarray.tostring` was removed).
 - Fixed `--plot_track_dst` crashing on mono files and drawing the second channel in every plot.
 - Fixed the local database: two albums by a new artist in one run crashed the insert, and an
