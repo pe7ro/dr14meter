@@ -7,6 +7,34 @@ For more info visit: <https://github.com/pe7ro/dr14meter>
 
 Installation packages available at pypi: <https://pypi.org/project/dr14meter/>
 
+### Installation ###
+
+dr14meter needs [ffmpeg](https://ffmpeg.org/) (with `ffprobe`) in your PATH.
+
+```bash
+pipx install dr14meter
+# with the optional plots (--hist, --spectrogram, ...) and tagging (--tag):
+pipx install "dr14meter[plot,tagging]"
+```
+
+Installing from source: see [INSTALL.md](https://github.com/pe7ro/dr14meter/blob/master/INSTALL.md).
+
+### Usage ###
+
+```bash
+dr14meter /path/to/album          # scan a folder; writes dr14-DR<N>.txt into it
+dr14meter -r /path/to/music       # scan all subfolders too
+dr14meter -f /path/to/track.flac  # a single file
+dr14meter --help                  # all options
+```
+
+A folder with a single audio file and a `.cue` sheet is measured per track, as the cue sheet describes.
+
+### License ###
+
+GPL-3.0-or-later, see [LICENSE](https://github.com/pe7ro/dr14meter/blob/master/LICENSE).
+Based on [dr14_t.meter](https://github.com/simon-r/dr14_t.meter) by Simone Riva.
+
 ### Introduction to DR14 T.meter ###
 
 DR14 T.meter is a free and open source command line tool for computing the Dynamic Range of your music 
