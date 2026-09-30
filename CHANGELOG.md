@@ -3,7 +3,7 @@
 Notable changes in each release. Versions up to 1.0.16 were released as
 [dr14_t.meter](https://github.com/simon-r/dr14_t.meter) by Simone Riva.
 
-## Unreleased
+## 1.1.6 — 2026-09-30
 
 - Added support for single-file albums with a cue sheet: a folder with exactly one audio file
   and one `.cue` is measured per track, as the cue sheet describes (#9, thanks arigit).
