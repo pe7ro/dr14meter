@@ -22,8 +22,7 @@ from dr14meter.audio_math import *
 
 try:
     import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-except:
+except ImportError:
     pass
 
 
@@ -52,6 +51,6 @@ def compute_lev_hist(Y, Fs, duration=None, bins=100, plot=True, title=None):
 
         pyplot.show()
     else:
-        (hist, bin_edges) = numpy.histogram(rms, bins=bins, density=True)
+        (hist, bin_edges) = numpy.histogram(Ym, bins=bins, density=True)
 
     return (hist, bin_edges)

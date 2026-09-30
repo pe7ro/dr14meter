@@ -25,10 +25,8 @@ from dr14meter.out_messages import *
 try:
     import matplotlib
     import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-    from matplotlib.widgets import *
-    from pylab import *
-except:
+    from matplotlib.widgets import SpanSelector
+except ImportError:
     pass
 
 
@@ -182,11 +180,11 @@ class PltTrackStruct:
 
                 m_p = mouse_pressed
                 m_p.plot_str = self
-                connect('button_press_event', m_p)
+                pyplot.connect('button_press_event', m_p)
 
                 w_m = wheel_moved
                 w_m.plot_str = self
-                connect('scroll_event', w_m)
+                pyplot.connect('scroll_event', w_m)
 
         self.fig.canvas.draw()
 
@@ -194,7 +192,7 @@ class PltTrackStruct:
 def plot_track_classic(Y=None, Fs=None, plot_str=None, utime=0.02, time_lim=5, start_time=0.0, end_time=-1.0):
 
     if Y is None and Fs is None and plot_str is None:
-        raise
+        raise ValueError("Either Y and Fs, or plot_str must be provided")
 
     if plot_str is None and Y is not None and Fs is not None:
         s = Y.shape
@@ -219,7 +217,7 @@ def plot_track_classic(Y=None, Fs=None, plot_str=None, utime=0.02, time_lim=5, s
         else:
             ch = 1
     else:
-        raise
+        raise ValueError("Invalid arguments: provide Y and Fs, or plot_str")
 
     sz_section = s[0]
     first_sample = 0
@@ -255,8 +253,8 @@ def plot_track_classic(Y=None, Fs=None, plot_str=None, utime=0.02, time_lim=5, s
 
     if sz_section > time_lim * Fs:
         plot_str.plot_mode = "fill"
-        plot_str.mp = zeros((sz, ch))
-        plot_str.mn = zeros((sz, ch))
+        plot_str.mp = np.zeros((sz, ch))
+        plot_str.mn = np.zeros((sz, ch))
         plot_str.tb = start_time + np.arange(0, sz) * block_len
 
         for i in range(sz):

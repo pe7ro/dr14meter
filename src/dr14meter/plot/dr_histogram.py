@@ -23,8 +23,7 @@ from dr14meter.audio_math import *
 
 try:
     import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-except:
+except ImportError:
     pass
 
 

@@ -53,10 +53,10 @@ def compute_DRV(Y, Fs, duration=None, Dr_lr=None):
 
         curr_sam = curr_sam + block_samples
 
-    i = numpy.logical_or(rms == numpy.nan, rms == -numpy.inf)
+    i = numpy.logical_or(numpy.isnan(rms), numpy.isinf(rms))
     rms[i] = decibel_u(audio_min(), 1.0)
 
-    i = numpy.logical_or(peaks == numpy.nan, peaks == -numpy.inf)
+    i = numpy.logical_or(numpy.isnan(peaks), numpy.isinf(peaks))
     peaks[i] = decibel_u(audio_min(), 1.0)
 
     Ydr = numpy.mean(peaks - rms, 1)

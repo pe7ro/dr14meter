@@ -163,8 +163,8 @@ def enable_database(prompt=True):
             coll_dir = get_collection_dir()
 
         try:
-            os.makedirs(db_path)
-        except:
+            os.makedirs(db_path, exist_ok=True)
+        except OSError:
             pass
 
         db_path += "/dr14_database.db"
@@ -194,7 +194,7 @@ def input_number(p=" > ", rng=(0, 2**31)):
 
         try:
             nr = int(nr)
-        except:
+        except ValueError:
             print_out(" !! Please insert a valid number ")
             continue
 

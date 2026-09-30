@@ -141,9 +141,9 @@ class AudioFileReader:
                 target.Y = target.Y / convert_8_bit
 
             #print_msg( "target.Y: " + str(target.Y.dtype) )
-        except:
+        except Exception as exc:
             self.__init__()
-            print_msg(f"Unexpected error: {sys.exc_info()}")
+            print_msg(f"Unexpected error reading WAV: {exc}")
             print_msg("\n - ERROR ! ")
             return False
 

@@ -22,9 +22,7 @@ from dr14meter.audio_math import *
 
 try:
     import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-    import pylab
-except:
+except ImportError:
     pass
 
 
@@ -41,7 +39,7 @@ def spectrogram(Y, Fs):
 
     for j in numpy.arange(ch):
         pyplot.subplot(210 + j + 1)
-        pylab.specgram(Y[:, j], NFFT=Fs, Fs=Fs, cmap='gnuplot2')
+        pyplot.specgram(Y[:, j], NFFT=Fs, Fs=Fs, cmap='gnuplot2')
 
         # mean_x = numpy.array([0, s[0] * (1 / Fs)])
         # mean_x = numpy.array([mean, mean])

@@ -27,6 +27,6 @@ import dr14meter.dr14_main as dr14
 
 
 if __name__ == '__main__':
-    dr14.main()
+    sys.exit(dr14.main())
 
 

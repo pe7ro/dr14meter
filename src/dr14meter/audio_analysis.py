@@ -161,6 +161,6 @@ def wav_write(file_path, Fs, Y):
 
         amplitude = 2.0 ** 16 - 1.0
         Y_s = numpy.int16((amplitude / 2.0) * Y)
-        Y_s = Y_s.tostring()
+        Y_s = Y_s.tobytes()
 
         wav_file.writeframes(Y_s)
