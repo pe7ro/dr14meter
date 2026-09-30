@@ -59,17 +59,26 @@ class AudioFileReader:
     def get_cmd(self):
         return self.__ffmpeg_cmd
 
-    def get_cmd_options(self, file_name, tmp_file):
-        return [
-            '-y',
+    def get_cmd_options(self, file_name, tmp_file, start=None, end=None):
+        opts = ['-y']
+
+        # -ss/-to as *input* options (before -i) seek/trim the source file itself,
+        # which is what we need to carve a single track out of a cue-sheet image.
+        if start is not None:
+            opts += ['-ss', f'{start:.6f}']
+        if end is not None:
+            opts += ['-to', f'{end:.6f}']
+
+        opts += [
             '-i',
             file_name,
             *'-b:a 16 -ar 44100'.split(),
             tmp_file,
             '-loglevel', 'quiet',
         ]
+        return opts
 
-    def read_audio_file_new(self, file_name, target):
+    def read_audio_file_new(self, file_name, target, start=None, end=None):
         file_name = pathlib.Path(file_name)
 
         time_a = time.time_ns()
@@ -79,7 +88,7 @@ class AudioFileReader:
         file = file_name.name
         tmp_dir = tempfile.gettempdir()
         tmp_file = pathlib.Path(tmp_dir, file + f"-{time_a}.wav")
-        full_command = [full_command] + self.get_cmd_options(file_name, tmp_file)
+        full_command = [full_command] + self.get_cmd_options(file_name, tmp_file, start, end)
         subprocess.check_call(full_command, shell=False)
         ret_f = self.read_wav(tmp_file, target)
         tmp_file.unlink(missing_ok=True)
@@ -89,7 +98,7 @@ class AudioFileReader:
 
         return ret_f
 
-    def read_wav(self, file_name, target):
+    def read_wav(self, file_name, target, start=None, end=None):
         file_name = pathlib.Path(file_name)
 
         time_a = time.time_ns()
@@ -101,10 +110,19 @@ class AudioFileReader:
                 target.Fs = wave_read.getframerate()
                 target.sample_width = wave_read.getsampwidth()
 
-                nframes = wave_read.getnframes()
+                total_frames = wave_read.getnframes()
+
+                start_frame = 0 if start is None else max(0, int(round(start * target.Fs)))
+                end_frame = total_frames if end is None else min(total_frames, int(round(end * target.Fs)))
+                start_frame = min(start_frame, total_frames)
+                nframes = max(0, end_frame - start_frame)
+
+                if start_frame:
+                    wave_read.setpos(start_frame)
+
                 #print_msg( file_name + "!!!!!!!!!!!!: " + str(target.channels) + " " + str(target.sample_width ) + " " + str( target.Fs ) + " " + str( nframes ) )
 
-                X = wave_read.readframes(wave_read.getnframes())
+                X = wave_read.readframes(nframes)
                 sample_type = f"int{target.sample_width * 8}"
                 target.Y = numpy.frombuffer(X, dtype=sample_type).reshape(nframes, target.channels)
 
@@ -133,12 +151,12 @@ class AudioFileReader:
 
 class WavFileReader(AudioFileReader):
 
-    def read_audio_file_new(self, file_name, target):
-        return self.read_wav(file_name, target)
+    def read_audio_file_new(self, file_name, target, start=None, end=None):
+        return self.read_wav(file_name, target, start, end)
 
     def get_cmd(self):
         return ""
 
-    def get_cmd_options(self, file_name, tmp_file):
+    def get_cmd_options(self, file_name, tmp_file, start=None, end=None):
         return ""
 

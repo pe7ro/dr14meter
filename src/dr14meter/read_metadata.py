@@ -263,6 +263,76 @@ class RetrieveMetadata:
 
         return artists
 
+    def scan_cue_metadata(self, cue, audio_file_path: pathlib.Path, virtual_names, durations_sec=None):
+        """Populate per-track metadata for a cue-sheet split of a single audio file.
+
+        Technical fields (codec, sampling_rate, bit, bitrate, ...) are read once
+        from the underlying audio file via ffprobe and shared by every track;
+        title/artist/album/track_nr/date/genre come from the cue sheet itself.
+        """
+
+        self._album = collections.defaultdict(int)
+        self._artist = collections.defaultdict(int)
+        self._tracks = {}
+        self._disk_nr = []
+
+        durations_sec = durations_sec or {}
+
+        base_track = {}
+        try:
+            self.scan_file_orig(audio_file_path)
+            base_track = self._tracks.get(audio_file_path.name, {}) or {}
+        except UnreadableAudioFileException:
+            pass
+
+        self._tracks = {}
+
+        whole_duration = base_track.get('duration')
+        whole_size = base_track.get('size')
+
+        def prorated_size(track_duration):
+            if track_duration is None or not whole_duration or whole_size is None:
+                return None
+            try:
+                return str(int(float(whole_size) * (track_duration / whole_duration)))
+            except (TypeError, ValueError, ZeroDivisionError):
+                return None
+
+        album_title = cue.album_title or audio_file_path.stem
+        self._album[album_title] += 1
+
+        for (tr, start, end), virtual_name in zip(cue.track_ranges(), virtual_names):
+            performer = cue.track_performer(tr)
+            if performer:
+                self._artist[performer] += 1
+
+            track_duration = durations_sec.get(virtual_name)
+            if track_duration is None and end is not None:
+                track_duration = end - start
+
+            track = {
+                'file_name': virtual_name,
+                'album': album_title,
+                'title': tr['title'] or virtual_name,
+                'track_nr': tr['track_nr'],
+                'codec': base_track.get('codec'),
+                'sampling_rate': base_track.get('sampling_rate'),
+                'channel': base_track.get('channel'),
+                'bit': base_track.get('bit'),
+                'bitrate': base_track.get('bitrate'),
+                'duration': track_duration,
+                'size': prorated_size(track_duration),
+            }
+
+            if performer:
+                track['artist'] = performer
+            if cue.genre:
+                track['genre'] = cue.genre
+            if cue.date:
+                track['date'] = cue.date
+
+            self._tracks[virtual_name] = track
+
     def get_value(self, file_name: str, field):
         f = self._tracks.get(file_name, None)
         if f is None:
