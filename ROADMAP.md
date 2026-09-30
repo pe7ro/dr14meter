@@ -85,7 +85,7 @@ from the official meter if we can get them.
 
 ## Known issues
 
-Bugs in 1.1.5 (current `master`).
+Bugs in the current `master`.
 
 | Problem | Where |
 |---|---|
