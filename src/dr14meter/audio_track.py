@@ -43,7 +43,7 @@ class AudioTrack:
     def get_file_ext_code(self):
         return self._ext
 
-    def read_track_new(self, file_name, target):
+    def read_track_new(self, file_name, target, start=None, end=None):
         ext = file_name.suffix.lower()
 
         if ext not in AudioTrack.FORMATS:
@@ -55,10 +55,12 @@ class AudioTrack:
             af = AudioFileReader()
 
         self._ext = AudioTrack.FORMATS.index(ext)
-        ret_f = af.read_audio_file_new(file_name, target)
+        ret_f = af.read_audio_file_new(file_name, target, start, end)
         return ret_f
 
-    def open(self, file_name: pathlib.Path):
+    def open(self, file_name: pathlib.Path, start=None, end=None):
+        """Read the whole file, or, if start/end (seconds) are given, only that
+        time range -- used to carve a single track out of a cue-sheet image."""
         file_name = pathlib.Path(file_name)
 
         self.Y = numpy.array([])
@@ -68,7 +70,7 @@ class AudioTrack:
         if not file_name.exists():
             return False
 
-        return self.read_track_new(file_name, self)
+        return self.read_track_new(file_name, self, start, end)
 
 
 class StructDuration:
