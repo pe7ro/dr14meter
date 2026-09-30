@@ -5,6 +5,8 @@ Notable changes in each release. Versions up to 1.0.16 were released as
 
 ## Unreleased
 
+- Added support for single-file albums with a cue sheet: a folder with exactly one audio file
+  and one `.cue` is measured per track, as the cue sheet describes (#9, thanks arigit).
 - Added `ROADMAP.md`: planned changes, conventions and known issues.
 - Removed the Debian packaging (`debian/`). It was outdated and could no longer be built;
   install with `pipx install dr14meter` (see `INSTALL.md`). Its release history is kept below.

@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import pathlib
 import time
 import sys
@@ -85,13 +86,16 @@ class AudioFileReader:
 
         full_command = self.__cmd
 
-        file = file_name.name
-        tmp_dir = tempfile.gettempdir()
-        tmp_file = pathlib.Path(tmp_dir, file + f"-{time_a}.wav")
+        # a unique name: cue-sheet tracks decode the same file in parallel
+        fd, tmp_file = tempfile.mkstemp(prefix=f"{file_name.stem}-", suffix=".wav")
+        os.close(fd)
+        tmp_file = pathlib.Path(tmp_file)
         full_command = [full_command] + self.get_cmd_options(file_name, tmp_file, start, end)
-        subprocess.check_call(full_command, shell=False)
-        ret_f = self.read_wav(tmp_file, target)
-        tmp_file.unlink(missing_ok=True)
+        try:
+            subprocess.check_call(full_command, shell=False)
+            ret_f = self.read_wav(tmp_file, target)
+        finally:
+            tmp_file.unlink(missing_ok=True)
 
         time_a = time.time_ns() - time_a
         dr14_log_info(f"AudioFileReader.read_audio_file_new: Clock: {time_a / 1000_000_000:2.8f}")

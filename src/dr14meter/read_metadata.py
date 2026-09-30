@@ -285,7 +285,11 @@ class RetrieveMetadata:
         except UnreadableAudioFileException:
             pass
 
+        # scan_file_orig() also counted the image's own album/artist tags; the
+        # cue sheet is the source for those, so start the counts afresh
         self._tracks = {}
+        self._album = collections.defaultdict(int)
+        self._artist = collections.defaultdict(int)
 
         whole_duration = base_track.get('duration')
         whole_size = base_track.get('size')

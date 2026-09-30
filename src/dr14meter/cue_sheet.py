@@ -1,19 +1,6 @@
-# dr14meter: compute the DR14 value of the given audio files
-# Copyright (C) 2024  pe7ro
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# SPDX-License-Identifier: GPL-3.0-or-later
 
+import codecs
 import pathlib
 import re
 
@@ -55,15 +42,26 @@ class CueSheet:
         self._parse(self._read_text())
 
     def _read_text(self):
-        for enc in ('utf-8-sig', 'utf-8', 'iso-8859-1'):
+        data = self.cue_path.read_bytes()
+
+        # EAC and others write UTF-16 cue sheets with a BOM; otherwise try UTF-8
+        # (with or without BOM), then cp1252, the usual Windows encoding.
+        # latin-1 maps every byte, so it is the last resort.
+        if data.startswith((codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)):
+            encodings = ('utf-16',)
+        else:
+            encodings = ('utf-8-sig', 'cp1252', 'iso-8859-1')
+
+        for enc in encodings:
             try:
-                return self.cue_path.read_text(encoding=enc)
+                return data.decode(enc)
             except UnicodeDecodeError:
                 continue
         raise CueParseError(f"Unable to decode cue sheet {self.cue_path}")
 
     def _parse(self, text):
         cur_track = None
+        file_cnt = 0
 
         for raw_line in text.splitlines():
             line = raw_line.strip()
@@ -86,6 +84,7 @@ class CueSheet:
                         self.date = val
 
             elif cmd == 'FILE':
+                file_cnt += 1
                 fm = re.match(r'^"(.*)"', rest)
                 self.audio_file_ref = fm.group(1) if fm else (rest.split() or [None])[0]
 
@@ -133,6 +132,16 @@ class CueSheet:
 
         if not self.tracks:
             raise CueParseError(f"No audio tracks with INDEX 01 found in {self.cue_path}")
+
+        # INDEX times are relative to their FILE, so several files can't be
+        # mapped onto the single audio file this parser splits
+        if file_cnt > 1:
+            raise CueParseError(f"Cue sheets referencing several files are not supported: {self.cue_path}")
+
+        for prev, cur in zip(self.tracks, self.tracks[1:]):
+            if cur['index01'] <= prev['index01']:
+                raise CueParseError(f"INDEX 01 of track {cur['track_nr']} does not come after "
+                                    f"track {prev['track_nr']} in {self.cue_path}")
 
     def track_performer(self, track):
         return track['performer'] or self.album_performer
