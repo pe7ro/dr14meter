@@ -72,13 +72,13 @@ class RetrieveMetadata:
         try:
             cmd = [self.__ffprobe_cmd, "-show_format", "-show_streams", file_path]
             data_txt = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=False)
-        except:
+        except (subprocess.CalledProcessError, OSError):
             self._tracks[file_path.name] = None
             raise UnreadableAudioFileException(f"problematic file: {file_path}")
 
         try:
             data_txt = data_txt.decode(encoding='UTF-8')
-        except:
+        except UnicodeDecodeError:
             data_txt = data_txt.decode(encoding='ISO-8859-1')
 
         track = {'file_name': file_path.name}

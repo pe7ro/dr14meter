@@ -26,7 +26,7 @@ from dr14meter.out_messages import dr14_log_info
 # todo check
 try:
     from scipy.interpolate import interp1d
-except:
+except ImportError:
     pass
 
 
@@ -56,7 +56,7 @@ class DynCompressor:
             self.maxDB = -3.0
             self.linear_limit = 0.3
 
-        print("%f %f " % (self.maxDB, self.linear_limit))
+        dr14_log_info("DynCompressor: maxDB: %f ; linear_limit: %f" % (self.maxDB, self.linear_limit))
 
     def dyn_compressor(self, Y, Fs):
 

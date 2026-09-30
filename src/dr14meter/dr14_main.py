@@ -182,12 +182,12 @@ def main():
 
     if not path_name.exists():
         print_msg(f'Error: The input directory "{path_name}" does not exist!')
-        return
+        return 1
 
     out_dir = pathlib.Path(options.out_dir) if options.out_dir else None
     if out_dir is not None and not out_dir.exists():
         print_msg(f'Error (-o): The target directory "{options.out_dir}"  does not exist!')
-        return
+        return 1
 
     if options.quiet:
         set_quiet_msg()
@@ -250,12 +250,9 @@ def main():
         print_msg(" Now there is the possibility to store all results in a database")
         print_msg(" If you want to enable this database execute the command:")
         print_msg(f"  > {get_exe_name()} --enable_database ")
-        print_msg(" for more details visit: http://dr14tmeter.sourceforge.net/index.php/DR_Database ")
 
     return 0
 
 
 if __name__ == '__main__':
-    print(__file__)
-
-    main()
+    sys.exit(main())

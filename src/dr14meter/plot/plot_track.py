@@ -25,8 +25,7 @@ from dr14meter.plot.my_time_formatter import MyTimeFormatter
 
 try:
     import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-except:
+except ImportError:
     pass
 
 
@@ -70,7 +69,7 @@ def plot_track(Y, Fs, Plot=True, time_range=None, utime=0):
         ax = pyplot.subplot(210 + i + 1)
 
         Yc[:] = 0.0
-        Yc[0:s[0]] = Y[:, 1]
+        Yc[0:s[0]] = Y[:, i]
 
         (H, xedges, yedges) = np.histogram2d(tm, Yc, bins=(int(sec), 500))
 

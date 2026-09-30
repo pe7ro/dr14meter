@@ -73,6 +73,13 @@ fork's raw-PCM version assumes stereo when ffprobe is missing and silently gets 
 audio (numpy + ffmpeg) that assert DR, peak and RMS, plus reference files with known values
 from the official meter if we can get them.
 
+## Ideas
+
+- EBU R128 / LUFS loudness next to DR (e.g. via `pyloudnorm` or ffmpeg's `ebur128` filter)
+- distinct exit codes: no audio found, ffmpeg missing, invalid path, …
+- TOML config instead of the INI `dr14.cfg`
+- replace `out_messages.py` with the `logging` module
+
 ## Conventions
 
 - New source files start with a one-line license header:
@@ -100,3 +107,5 @@ Bugs in the current `master`.
 | `ExtendedTextTable`: the title-padding condition is inverted, so separator lines grow with every title (`--query` output) | `table.py` `ExtendedTextTable._update_col_sz` |
 | `ExtendedTextTable` `col_cnt` setter: typo `self.col_sz` and swapped branches; more than 5 columns raises AttributeError (`--query`) | `table.py` `ExtendedTextTable.set_col_cnt` |
 | `--tag`: `.wav`, `.ac3` and `.wma` raise an exception that aborts the run; `.wv`, `.dsf`, `.dff` and `.oga` aren't supported | `tagger.py` |
+| `--compress` writes its result next to the input file, not into the temp directory as intended (the absolute input path wins the path join) | `audio_analysis.py` `AudioCompressor.virt_compute` |
+| The config directory is created with `os.mkdir`, which fails if `$XDG_CONFIG_HOME` (or `~/.config`) doesn't exist yet | `dr14_config.py` `get_config_directory` |

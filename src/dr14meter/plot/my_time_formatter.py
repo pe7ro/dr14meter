@@ -18,14 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 try:
-    import matplotlib
-    import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-except:
-    pass
+    import matplotlib.ticker
 
-
-try:
     class MyTimeFormatter(matplotlib.ticker.Formatter):
 
         def __init__(self, utime=1.0, milli_sec=False):
@@ -41,8 +35,8 @@ try:
                 return "%02d:%02d.%03d" % (minu, sec, msec)
             else:
                 return "%02d:%02d" % (minu, sec)
-except:
+except ImportError:
     class MyTimeFormatter:
 
-        def __init__(self):
-            raise
+        def __init__(self, *args, **kwargs):
+            raise ImportError("matplotlib is required for MyTimeFormatter")

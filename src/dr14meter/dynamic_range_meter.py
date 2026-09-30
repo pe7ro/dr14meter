@@ -19,7 +19,6 @@
 import concurrent.futures
 import os
 import pathlib
-import sys
 
 from dr14meter.compute_dr14 import compute_dr14
 from dr14meter.audio_track import AudioTrack, StructDuration
@@ -78,8 +77,8 @@ class DynamicRangeMeter:
             with file_name.open(file_mode) as f:  # "utf-8-sig"
                 f.write(self.table_txt)
             return True
-        except:
-            print_msg(f"File opening error [{file_name}]: {sys.exc_info()[0]}")
+        except Exception as exc:
+            print_msg(f"File opening error [{file_name}]: {exc}")
             return False
 
 

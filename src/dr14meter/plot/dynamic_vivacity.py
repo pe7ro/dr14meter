@@ -27,8 +27,7 @@ import time
 
 try:
     import matplotlib.pyplot as pyplot
-    import matplotlib.mlab as mlab
-except:
+except ImportError:
     pass
 
 

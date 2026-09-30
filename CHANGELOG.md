@@ -3,6 +3,17 @@
 Notable changes in each release. Versions up to 1.0.16 were released as
 [dr14_t.meter](https://github.com/simon-r/dr14_t.meter) by Simone Riva.
 
+## Unreleased
+
+- Fixed `--compress` crashing with numpy 2 (`ndarray.tostring` was removed).
+- Fixed `--plot_track_dst` crashing on mono files and drawing the second channel in every plot.
+- Fixed the local database: two albums by a new artist in one run crashed the insert, and an
+  error during a write left a lock held so later writes hung. Connections are now closed.
+- The exit code is 1 when the input path or the `-o` directory doesn't exist, and
+  `python -m dr14meter` now returns the exit code too.
+- `--compress` no longer prints debug values to stdout; `--plot_track` and `--spectrogram` no
+  longer use the deprecated `pylab` module.
+
 ## 1.1.6 — 2026-09-30
 
 - Added support for single-file albums with a cue sheet: a folder with exactly one audio file
