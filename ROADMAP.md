@@ -69,9 +69,9 @@ fork's raw-PCM version assumes stereo when ffprobe is missing and silently gets 
 
 ### Automated tests
 
-`tests/sanity-test-00.py` runs the CLI but checks nothing. Add pytest tests on synthetic
-audio (numpy + ffmpeg) that assert DR, peak and RMS, plus reference files with known values
-from the official meter if we can get them.
+`tests/test_*.py` (pytest) check DR values on synthetic audio whose DR follows from the
+definition, decoding, folder scans, cue sheets and the command line. Still missing: reference
+files with values from the official meter, and tests for `--tag` and the local database.
 
 ## Ideas
 
@@ -109,3 +109,4 @@ Bugs in the current `master`.
 | `--tag`: `.wav`, `.ac3` and `.wma` raise an exception that aborts the run; `.wv`, `.dsf`, `.dff` and `.oga` aren't supported | `tagger.py` |
 | `--compress` writes its result next to the input file, not into the temp directory as intended (the absolute input path wins the path join) | `audio_analysis.py` `AudioCompressor.virt_compute` |
 | The config directory is created with `os.mkdir`, which fails if `$XDG_CONFIG_HOME` (or `~/.config`) doesn't exist yet | `dr14_config.py` `get_config_directory` |
+| `--hist`, `--compress` and the other analysis options crash if ffprobe is missing or can't read the file (only needed for the track title) | `audio_analysis.py` `AudioAnalysis.compute_track` |
